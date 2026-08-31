@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Bookmark, UserRound } from 'lucide-react';
+import { Bookmark, Globe2, UserRound } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { AppMark } from '@/App';
 import { isLoggedIn } from '@/lib/api';
+import { languageOptions, useTranslation } from '@/lib/language';
 
 // Delete the old isUserLoggedIn() function.
 
@@ -11,6 +12,7 @@ import { isLoggedIn } from '@/lib/api';
 
 export function SiteNavbar() {
   const [location] = useLocation();
+  const { language, setLanguage, t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(() => isLoggedIn());
 
@@ -47,7 +49,7 @@ export function SiteNavbar() {
           <AppMark />
         </Link>
 
-        <nav className="flex shrink-0 items-center gap-3 sm:gap-7" aria-label="Main navigation">
+        <nav className="flex shrink-0 items-center gap-2 sm:gap-7" aria-label="Main navigation">
           <Link
             href="/browse"
             className={`text-[9px] font-bold uppercase tracking-[.08em] transition sm:text-[11px] sm:tracking-[.14em] ${
@@ -57,7 +59,7 @@ export function SiteNavbar() {
             }`}
             data-testid="link-discover"
           >
-            Discover
+            {t('discover')}
           </Link>
 
           <Link
@@ -69,7 +71,7 @@ export function SiteNavbar() {
             }`}
             data-testid="link-nature"
           >
-            Nature
+            {t('nature')}
           </Link>
 
           {loggedIn ? (
@@ -84,7 +86,7 @@ export function SiteNavbar() {
       data-testid="link-saved"
     >
       <Bookmark className="h-4 w-4" />
-      <span className="hidden sm:inline">Saved</span>
+      <span className="hidden sm:inline">{t('saved')}</span>
     </Link>
 
     <Link
@@ -97,20 +99,36 @@ export function SiteNavbar() {
       data-testid="link-account-center"
     >
       <UserRound className="h-3.5 w-3.5" />
-      <span className="hidden sm:inline">Account center</span>
+      <span className="hidden sm:inline">{t('account')}</span>
     </Link>
   </>
 ) : (
   <Link
     href="/login"
     className="flex h-9 w-9 items-center justify-center rounded-full border border-[#f9f0df]/40 text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575] sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-2 sm:text-[11px] sm:font-bold sm:uppercase sm:tracking-[.12em]"
-    aria-label="Log in"
+    aria-label={t('login')}
     data-testid="link-login"
   >
     <UserRound className="h-3.5 w-3.5" />
-    <span className="hidden sm:inline">Log in</span>
+    <span className="hidden sm:inline">{t('login')}</span>
   </Link>
 )}
+          <label className="flex h-9 items-center gap-1 rounded-full border border-[#f9f0df]/40 px-2 text-[#f9f0df] sm:h-auto sm:px-3 sm:py-2" aria-label="Select language">
+            <Globe2 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+            <select
+              value={language}
+              onChange={(event) => setLanguage(event.target.value as typeof language)}
+              className="w-8 bg-transparent text-[9px] font-bold uppercase outline-none sm:w-14 sm:text-[10px]"
+              aria-label="Language"
+              data-testid="select-language"
+            >
+              {languageOptions.map((option) => (
+                <option key={option.code} value={option.code} className="text-[#183c44]">
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
         </nav>
       </div>
     </header>

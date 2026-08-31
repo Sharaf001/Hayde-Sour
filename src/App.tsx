@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { apiUrlFor, directionsUrlFor, fetchGallery, fetchListings, fetchSaved, galleryImageUrlFor, getCurrentUser, imageUrlFor, isLoggedIn, resolveImageSrc, saveListing, unsaveListing } from '@/lib/api';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { LanguageProvider, useTranslation } from '@/lib/language';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
@@ -181,6 +182,7 @@ async function fetchCategories(): Promise<ApiCategory[]> {
 
 function Home() {
   const [, setLocation] = useLocation();
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<Listing | null>(null);
@@ -302,18 +304,18 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
           <div className="relative mx-auto flex min-h-[740px] max-w-[1280px] items-end px-5 pb-24 pt-36 lg:min-h-[775px] lg:px-10 lg:pb-28">
             <div className="max-w-[800px]">
               <div className="reveal mb-7 flex items-center gap-3 text-[10px] font-bold uppercase tracking-[.22em] text-[#f1c575]">
-                <span className="h-px w-8 bg-[#f1c575]" /> Tyre, South Lebanon
+                <span className="h-px w-8 bg-[#f1c575]" /> {t('heroLocation')}
               </div>
               <h1 className="reveal reveal-delay-1 max-w-[790px] font-display text-[clamp(4rem,9.5vw,8.7rem)] leading-[.81] tracking-[-.055em] text-balance">
-                This where<br /><em className="font-normal text-[#f1c575]">the good days</em><br />begin.
+                {t('heroLineOne')}<br /><em className="font-normal text-[#f1c575]">{t('heroLineTwo')}</em><br />{t('heroLineThree')}
               </h1>
               <p className="reveal reveal-delay-2 mt-8 max-w-[490px] text-[15px] leading-7 text-[#f9f0df]/76">
-                A warm, useful guide to Sour — Start here.
+                {t('heroText')}
               </p>
               <form onSubmit={(event) => { event.preventDefault(); goSearch(); }} className="reveal reveal-delay-3 mt-9 flex max-w-[600px] items-center rounded-2xl bg-[#f9f0df] p-1.5 shadow-2xl" data-testid="form-hero-search">
                 <Search className="ml-3 h-5 w-5 shrink-0 text-[#183c44]/55" />
-                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Try “sea view”,“coffee”..." className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-[#183c44] outline-none placeholder:text-[#183c44]/45" aria-label="Search places in Sour" data-testid="input-hero-search" />
-                <button type="submit" className="rounded-xl bg-[#e58c70] px-5 py-3 text-xs font-bold uppercase tracking-[.13em] text-[#fff8ed] transition hover:bg-[#d67558]" data-testid="button-hero-search">Search</button>
+                <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t('heroSearch')} className="min-w-0 flex-1 bg-transparent px-3 py-3 text-sm text-[#183c44] outline-none placeholder:text-[#183c44]/45" aria-label={t('search')} data-testid="input-hero-search" />
+                <button type="submit" className="rounded-xl bg-[#e58c70] px-5 py-3 text-xs font-bold uppercase tracking-[.13em] text-[#fff8ed] transition hover:bg-[#d67558]" data-testid="button-hero-search">{t('search')}</button>
               </form>
               <div className="reveal reveal-delay-3 mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-bold uppercase tracking-[.13em] text-[#f9f0df]/60">
                 <span className="flex items-center gap-2"><Clock3 className="h-3.5 w-3.5 text-[#f1c575]" /> 22° · light sea breeze</span>
@@ -333,11 +335,11 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
           <div className="mx-auto grid max-w-[1280px] gap-12 px-5 lg:grid-cols-[.75fr_1.25fr] lg:px-10">
             <div className="flex flex-col justify-between">
               <div>
-                <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">A few places we love</p>
-                <h2 className="max-w-[430px] font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">The local edit, not the loudest list.</h2>
-                <p className="mt-6 max-w-[350px] text-sm leading-6 text-[#476269]">Some places make you feel like you have been coming here for years.</p>
+                <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">{t('featuredLabel')}</p>
+                <h2 className="max-w-[430px] font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">{t('featuredTitle')}</h2>
+                <p className="mt-6 max-w-[350px] text-sm leading-6 text-[#476269]">{t('featuredText')}</p>
               </div>
-              <a href="/nature" className="mt-10 flex w-fit items-center gap-3 border-b border-[#183c44] pb-2 text-xs font-bold uppercase tracking-[.15em] text-[#183c44] transition hover:gap-5" data-testid="button-see-all-spots">See all spots <ArrowRight className="h-4 w-4" /></a>
+              <a href="/nature" className="mt-10 flex w-fit items-center gap-3 border-b border-[#183c44] pb-2 text-xs font-bold uppercase tracking-[.15em] text-[#183c44] transition hover:gap-5" data-testid="button-see-all-spots">{t('seeAll')} <ArrowRight className="h-4 w-4" /></a>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {featuredListings.length === 0 && (
@@ -378,9 +380,9 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
 
 <div className="border-b border-[#d7c9b4] bg-[#f1c575] text-[#183c44]">
           <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-5 overflow-hidden px-5 py-4 lg:px-10">
-            <p className="whitespace-nowrap text-[11px] font-bold uppercase tracking-[.18em]">The local shortcut</p>
+            <p className="whitespace-nowrap text-[11px] font-bold uppercase tracking-[.18em]">{t('localShortcut')}</p>
             <div className="hidden h-px flex-1 bg-[#183c44]/20 sm:block" />
-            <p className="whitespace-nowrap text-[12px] font-medium">Ways to find your feet in the city.</p>
+            <p className="whitespace-nowrap text-[12px] font-medium">{t('localShortcutText')}</p>
             <ArrowDownRight className="h-4 w-4 shrink-0" />
           </div>
         </div>
@@ -388,22 +390,22 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
         <section className="mx-auto max-w-[1280px] px-5 py-20 lg:px-10 lg:py-28" id="categories">
           <div className="mb-10 flex items-end justify-between gap-5">
             <div>
-              <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">Start with what you need</p>
-              <h2 className="max-w-[520px] font-display text-5xl leading-[.94] tracking-[-.04em] sm:text-6xl">A city with a little bit of everything.</h2>
+              <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">{t('categoriesLabel')}</p>
+              <h2 className="max-w-[520px] font-display text-5xl leading-[.94] tracking-[-.04em] sm:text-6xl">{t('categoriesTitle')}</h2>
             </div>
             <div className="hidden flex-col items-end gap-4 sm:flex">
               
-              <a href="/browse" className="flex items-center gap-2 rounded-full border border-[#183c44] px-4 py-2 text-[11px] font-bold uppercase tracking-[.1em] text-[#183c44] transition hover:bg-[#183c44] hover:text-[#f9f0df]" data-testid="link-all-categories">All categories <ArrowRight className="h-3.5 w-3.5" /></a>
+              <a href="/browse" className="flex items-center gap-2 rounded-full border border-[#183c44] px-4 py-2 text-[11px] font-bold uppercase tracking-[.1em] text-[#183c44] transition hover:bg-[#183c44] hover:text-[#f9f0df]" data-testid="link-all-categories">{t('allCategories')} <ArrowRight className="h-3.5 w-3.5" /></a>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {categoriesLoading ? (
               <div className="rounded-2xl border border-dashed border-[#c9bba5] p-5 text-sm text-[#476269] sm:col-span-2 lg:col-span-4">
-                Loading categories…
+                {t('loadingCategories')}
               </div>
             ) : categoryCards.length === 0 ? (
               <div className="rounded-2xl border border-dashed border-[#c9bba5] p-5 text-sm text-[#476269] sm:col-span-2 lg:col-span-4">
-                No categories are available yet.
+                {t('noCategories')}
               </div>
             ) : (
               categoryCards.map((category, index) => {
@@ -446,10 +448,10 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
         <section id="day-plan" className="scroll-mt-5 bg-[#183c44] py-20 text-[#f9f0df] lg:py-28">
           <div className="mx-auto grid max-w-[1280px] gap-12 px-5 lg:grid-cols-[.7fr_1.3fr] lg:px-10">
             <div>
-              <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#f1c575]">Borrow our {dayName}</p>
-              <h2 className="max-w-[440px] font-display text-5xl leading-[.94] tracking-[-.04em] sm:text-6xl">One good day in Sour.</h2>
-              <p className="mt-6 max-w-[355px] text-sm leading-6 text-[#f9f0df]/65">No rushing. Just enough of the old city, the sea and something good to eat.</p>
-              <button onClick={saveDayToCalendar} className="mt-9 flex items-center gap-3 rounded-full border border-[#f9f0df]/30 px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575]" data-testid="button-print-day-plan"><CalendarDays className="h-4 w-4" /> Save this day</button>
+              <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#f1c575]">{t('dayLabel')} {dayName}</p>
+              <h2 className="max-w-[440px] font-display text-5xl leading-[.94] tracking-[-.04em] sm:text-6xl">{t('dayTitle')}</h2>
+              <p className="mt-6 max-w-[355px] text-sm leading-6 text-[#f9f0df]/65">{t('dayText')}</p>
+              <button onClick={saveDayToCalendar} className="mt-9 flex items-center gap-3 rounded-full border border-[#f9f0df]/30 px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575]" data-testid="button-print-day-plan"><CalendarDays className="h-4 w-4" /> {t('saveDay')}</button>
             </div>
             <div className="divide-y divide-[#f9f0df]/15 border-t border-[#f9f0df]/20">
               {plan.map((item) => {
@@ -468,14 +470,14 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
 
         <section id="essentials" className="scroll-mt-5 mx-auto max-w-[1280px] px-5 py-20 lg:px-10 lg:py-28">
           <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <div><p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">Good to know</p><h2 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">A little local context.</h2></div>
-            <p className="max-w-[280px] text-sm leading-6 text-[#476269]">The details that make a day out feel easy.</p>
+            <div><p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">{t('goodToKnow')}</p><h2 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">{t('localContext')}</h2></div>
+            <p className="max-w-[280px] text-sm leading-6 text-[#476269]">{t('localContextText')}</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl bg-[#f1c575] p-6 text-[#183c44]"><BusFront className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">Get around</p><p className="mt-3 text-xs leading-5 text-[#183c44]/70">Service taxis are the easiest hop. Ask for the white taxis.</p></div>
-            <div className="rounded-2xl bg-[#e58c70] p-6 text-[#fff8ed]"><Wifi className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">Stay connected</p><p className="mt-3 text-xs leading-5 text-[#fff8ed]/75">Most cafes have Wi-Fi. For a local SIM, ask at any phone shop.</p></div>
-            <div className="rounded-2xl bg-[#b7c8c0] p-6 text-[#183c44]"><Phone className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">Need a hand?</p><p className="mt-3 text-xs leading-5 text-[#183c44]/70">For emergencies, call 140. Lebanese Red Cross</p></div>
-            <div className="rounded-2xl bg-[#183c44] p-6 text-[#f9f0df]"><MapPin className="h-5 w-5 text-[#f1c575]" /><p className="mt-12 font-display text-3xl leading-none">The best address</p><p className="mt-3 text-xs leading-5 text-[#f9f0df]/65">Old City by the sea. Start there and let the afternoon decide what comes next.</p></div>
+            <div className="rounded-2xl bg-[#f1c575] p-6 text-[#183c44]"><BusFront className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('getAround')}</p><p className="mt-3 text-xs leading-5 text-[#183c44]/70">Service taxis are the easiest hop. Ask for the white taxis.</p></div>
+            <div className="rounded-2xl bg-[#e58c70] p-6 text-[#fff8ed]"><Wifi className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('stayConnected')}</p><p className="mt-3 text-xs leading-5 text-[#fff8ed]/75">Most cafes have Wi-Fi. For a local SIM, ask at any phone shop.</p></div>
+            <div className="rounded-2xl bg-[#b7c8c0] p-6 text-[#183c44]"><Phone className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('needHelp')}</p><p className="mt-3 text-xs leading-5 text-[#183c44]/70">For emergencies, call 140. Lebanese Red Cross</p></div>
+            <div className="rounded-2xl bg-[#183c44] p-6 text-[#f9f0df]"><MapPin className="h-5 w-5 text-[#f1c575]" /><p className="mt-12 font-display text-3xl leading-none">{t('bestAddress')}</p><p className="mt-3 text-xs leading-5 text-[#f9f0df]/65">Old City by the sea. Start there and let the afternoon decide what comes next.</p></div>
           </div>
         </section>
       </main>
@@ -625,14 +627,16 @@ function RoutedErrorBoundary({ children }: { children: ReactNode }) {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-          <Router />
-        </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <LanguageProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+            <Router />
+          </WouterRouter>
+          <Toaster />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </LanguageProvider>
   );
 }
 
