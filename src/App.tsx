@@ -540,9 +540,70 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
   );
 }
 
+const PAGE_METADATA: Record<string, { title: string; description: string }> = {
+  '/': {
+    title: 'Hayde Sour | Your Guide to Tyre, Lebanon',
+    description: 'Discover cafes, restaurants, hotels, shops, nature, and local experiences in Tyre (Sour), Lebanon.',
+  },
+  '/browse': {
+    title: 'Explore Places in Tyre | Hayde Sour',
+    description: 'Browse handpicked restaurants, cafes, hotels, pharmacies, shops, and more in Tyre, Lebanon.',
+  },
+  '/saved': {
+    title: 'Saved Places | Hayde Sour',
+    description: 'View the places you saved for your next visit to Tyre, Lebanon.',
+  },
+  '/login': {
+    title: 'Log In or Create an Account | Hayde Sour',
+    description: 'Log in or create a Hayde Sour account to save places and share your ratings.',
+  },
+  '/account': {
+    title: 'Your Account | Hayde Sour',
+    description: 'Manage your Hayde Sour account details and Sour Card.',
+  },
+  '/nature': {
+    title: 'Nature in Tyre | Hayde Sour',
+    description: 'Explore beaches, coastline, and outdoor places to visit around Tyre, Lebanon.',
+  },
+  '/admin': {
+    title: 'Admin | Hayde Sour',
+    description: 'Manage Hayde Sour listings, categories, and local guides.',
+  },
+};
+
+const NOT_FOUND_METADATA = {
+  title: 'Page Not Found | Hayde Sour',
+  description: 'The page you are looking for could not be found.',
+};
+
+function PageMetadata() {
+  const [location] = useLocation();
+
+  useEffect(() => {
+    const metadata = PAGE_METADATA[location] || NOT_FOUND_METADATA;
+    document.title = metadata.title;
+
+    const descriptions = [
+      ['meta[name="description"]', 'content'],
+      ['meta[property="og:title"]', 'content', metadata.title],
+      ['meta[property="og:description"]', 'content'],
+      ['meta[name="twitter:title"]', 'content', metadata.title],
+      ['meta[name="twitter:description"]', 'content'],
+    ] as const;
+
+    descriptions.forEach(([selector, attribute, value]) => {
+      const element = document.querySelector<HTMLMetaElement>(selector);
+      if (element) element.setAttribute(attribute, value || metadata.description);
+    });
+  }, [location]);
+
+  return null;
+}
+
 function Router() {
   return (
     <RoutedErrorBoundary>
+      <PageMetadata />
       <Switch>
         <Route path="/" component={Home} />
         <Route path="/browse" component={BrowsePage} />
