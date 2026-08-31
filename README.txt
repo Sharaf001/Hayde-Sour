@@ -87,8 +87,8 @@ seed" to backfill the three starter images.
   - Vercel: import the same repository as a Vite project, then deploy.
     vercel.json proxies /api requests to Render and preserves client-side
     routes such as /browse and /admin; no VITE_API_URL is required.
-  - Render ALLOWED_ORIGINS must be the exact Vercel URL, for example
-    https://where-to-go-sour.vercel.app. Redeploy Render after setting it.
-  - When you later use a custom domain, add that exact HTTPS frontend
-    domain to ALLOWED_ORIGINS. Update vercel.json only if the API moves
-    to a new domain.
+  - Render ALLOWED_ORIGINS must allow the deployed frontend origins:
+    https://www.haydesour.com,https://hayde-sour.vercel.app
+    Redeploy Render after setting it.
+  - Vercel proxies API requests to Render, so vercel.json does not need
+    to change when the frontend domain changes.
