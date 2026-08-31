@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useLocation, useSearch } from 'wouter';
 import { AppMark } from '@/App';
 import { PasswordInput } from '@/components/password-input';
+import { useTranslation } from '@/lib/language';
 import { forgotPassword, login, register, resendVerificationCode, resetPassword, verifyEmail } from '@/lib/api';
 
 const emptyRegisterForm = { firstName: '', lastName: '', username: '', email: '', address: '', dateOfBirth: '', password: '' };
@@ -9,6 +10,7 @@ const emptyRegisterForm = { firstName: '', lastName: '', username: '', email: ''
 type Mode = 'login' | 'register' | 'verify' | 'forgot' | 'reset';
 
 export default function LoginPage() {
+  const { tr } = useTranslation();
   const [, setLocation] = useLocation();
   const rawSearch = useSearch();
   const redirectTo = new URLSearchParams(rawSearch).get('next') || '/';
@@ -124,18 +126,18 @@ export default function LoginPage() {
           {(mode === 'login' || mode === 'register') && (
             <div className="mb-6 flex rounded-full border border-[#cfc0aa] p-1">
               <button type="button" onClick={() => switchMode('login')} className={`flex-1 rounded-full py-2 text-xs font-bold uppercase tracking-[.1em] transition ${mode === 'login' ? 'bg-[#183c44] text-[#f9f0df]' : 'text-[#476269]'}`} data-testid="button-mode-login">
-                Log in
+                {tr('Log in', 'تسجيل الدخول', 'Connexion')}
               </button>
               <button type="button" onClick={() => switchMode('register')} className={`flex-1 rounded-full py-2 text-xs font-bold uppercase tracking-[.1em] transition ${mode === 'register' ? 'bg-[#183c44] text-[#f9f0df]' : 'text-[#476269]'}`} data-testid="button-mode-register">
-                Sign up
+                {tr('Sign up', 'إنشاء حساب', 'Créer un compte')}
               </button>
             </div>
           )}
 
           {mode === 'login' && (
             <form onSubmit={handleLogin}>
-              <p className="font-display text-3xl text-[#183c44]">Welcome back.</p>
-              <p className="mt-2 text-sm text-[#476269]">Log in with your username to save places and leave ratings.</p>
+              <p className="font-display text-3xl text-[#183c44]">{tr('Welcome back.', 'مرحباً بعودتك.', 'Bon retour.')}</p>
+              <p className="mt-2 text-sm text-[#476269]">{tr('Log in with your username to save places and leave ratings.', 'سجّل الدخول لحفظ الأماكن وإضافة التقييمات.', 'Connectez-vous pour enregistrer des lieux et laisser des avis.')}</p>
 
               <label className="mt-6 block text-[10px] font-bold uppercase tracking-[.1em] text-[#476269]">Username</label>
               <input required autoComplete="username" value={loginForm.username} onChange={(e) => setLoginForm({ ...loginForm, username: e.target.value })} className="mt-1.5 w-full rounded-xl border border-[#cfc0aa] bg-white px-4 py-3 text-sm text-[#183c44] outline-none focus:border-[#183c44]" data-testid="input-username" />
@@ -144,20 +146,20 @@ export default function LoginPage() {
               <div className="mt-1.5">
                 <PasswordInput value={loginForm.password} onChange={(v) => setLoginForm({ ...loginForm, password: v })} autoComplete="current-password" required testId="input-password" />
               </div>
-              <button type="button" onClick={() => switchMode('forgot')} className="mt-2 text-[11px] font-semibold text-[#476269] underline hover:text-[#183c44]" data-testid="link-forgot-password">Forgot password?</button>
+              <button type="button" onClick={() => switchMode('forgot')} className="mt-2 text-[11px] font-semibold text-[#476269] underline hover:text-[#183c44]" data-testid="link-forgot-password">{tr('Forgot password?', 'هل نسيت كلمة المرور؟', 'Mot de passe oublié ?')}</button>
 
               {notice && <p className="mt-4 text-sm text-[#2f7a4d]" data-testid="text-auth-notice">{notice}</p>}
               {error && <p className="mt-4 text-sm text-[#c1543f]" data-testid="text-auth-error">{error}</p>}
 
               <button type="submit" disabled={submitting} className="mt-6 w-full rounded-full bg-[#183c44] px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] transition hover:bg-[#24515a] disabled:opacity-50" data-testid="button-submit-auth">
-                {submitting ? 'Please wait…' : 'Log in'}
+                {submitting ? tr('Please wait…', 'يرجى الانتظار…', 'Veuillez patienter…') : tr('Log in', 'تسجيل الدخول', 'Connexion')}
               </button>
             </form>
           )}
 
           {mode === 'register' && (
             <form onSubmit={handleRegister}>
-              <p className="font-display text-3xl text-[#183c44]">Create an account.</p>
+              <p className="font-display text-3xl text-[#183c44]">{tr('Create an account.', 'أنشئ حساباً.', 'Créer un compte.')}</p>
               <p className="mt-2 text-sm text-[#476269]">A few details and you're set - we'll email you a code to confirm.</p>
 
               <div className="mt-6 grid grid-cols-2 gap-3">
@@ -257,7 +259,7 @@ export default function LoginPage() {
             </form>
           )}
         </div>
-        <a href="/" className="mt-6 block text-center text-xs font-bold uppercase tracking-[.1em] text-[#476269] hover:text-[#183c44]" data-testid="link-back-home">Back home</a>
+        <a href="/" className="mt-6 block text-center text-xs font-bold uppercase tracking-[.1em] text-[#476269] hover:text-[#183c44]" data-testid="link-back-home">{tr('Back home', 'العودة للرئيسية', 'Retour à l’accueil')}</a>
       </div>
     </div>
   );

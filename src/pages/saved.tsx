@@ -5,6 +5,7 @@ import { AppMark } from '@/App';
 import { SiteNavbar } from '@/components/site-navbar';
 import { StarRating } from '@/components/star-rating';
 import { ImageLightbox } from '@/components/image-lightbox';
+import { useTranslation } from '@/lib/language';
 import {
   directionsUrlFor,
   fetchListingGallery,
@@ -22,6 +23,7 @@ import {
 } from '@/lib/api';
 
 export default function SavedPage() {
+  const { tr } = useTranslation();
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<ApiListing | null>(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
@@ -63,8 +65,8 @@ export default function SavedPage() {
       <SiteNavbar />
 
       <main className="mx-auto max-w-[1280px] px-5 pb-14 pt-28 lg:px-10 lg:pb-20 lg:pt-32">
-        <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">Your list</p>
-        <h1 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">Saved spots.</h1>
+        <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">{tr('Your list', 'قائمتك', 'Votre liste')}</p>
+        <h1 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">{tr('Saved spots.', 'الأماكن المحفوظة.', 'Lieux enregistrés.')}</h1>
         <p className="mt-5 max-w-[430px] text-sm leading-6 text-[#476269]">Everything you have bookmarked while browsing Sour, kept here for next time.</p>
 
         {!loggedIn && (

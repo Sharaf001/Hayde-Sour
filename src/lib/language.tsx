@@ -90,5 +90,10 @@ export function useLanguage() {
 
 export function useTranslation() {
   const { language, setLanguage } = useLanguage();
-  return { language, setLanguage, t: (key: keyof typeof translations.en) => translations[language][key] };
+  return {
+    language,
+    setLanguage,
+    t: (key: keyof typeof translations.en) => translations[language][key],
+    tr: (english: string, arabic: string, french: string) => language === 'ar' ? arabic : language === 'fr' ? french : english,
+  };
 }

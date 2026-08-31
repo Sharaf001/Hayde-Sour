@@ -4,6 +4,7 @@ import { SiteNavbar } from '@/components/site-navbar';
 import { ArrowLeft, ExternalLink, Leaf, MapPin, X } from 'lucide-react';
 import { AppMark } from '@/App';
 import { ImageLightbox } from '@/components/image-lightbox';
+import { useTranslation } from '@/lib/language';
 import {
   directionsUrlFor,
   fetchGallery,
@@ -15,6 +16,7 @@ import {
 } from '@/lib/api';
 
 export default function NaturePage() {
+  const { tr } = useTranslation();
   const [selected, setSelected] = useState<GalleryItem | null>(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
 
@@ -34,9 +36,9 @@ export default function NaturePage() {
     <SiteNavbar />
 
       <main className="mx-auto max-w-[1280px] px-5 pb-14 pt-28 lg:px-10 lg:pb-20 lg:pt-32">
-        <p className="mb-3 flex items-center gap-2 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]"><Leaf className="h-3.5 w-3.5" /> Where to go nature</p>
-        <h1 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">Open air, open water.</h1>
-        <p className="mt-5 max-w-[430px] text-sm leading-6 text-[#476269]">Coastline, ruins and the quieter corners of Sour worth stepping outside for.</p>
+        <p className="mb-3 flex items-center gap-2 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]"><Leaf className="h-3.5 w-3.5" /> {tr('Where to go nature', 'وجهات الطبيعة', 'Nature à découvrir')}</p>
+        <h1 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">{tr('Open air, open water.', 'هواء طلق ومياه مفتوحة.', 'Grand air, eau libre.')}</h1>
+        <p className="mt-5 max-w-[430px] text-sm leading-6 text-[#476269]">{tr('Coastline, ruins and the quieter corners of Sour worth stepping outside for.', 'الساحل والآثار والزوايا الهادئة في صور التي تستحق الزيارة.', 'Le littoral, les ruines et les coins calmes de Sour à découvrir.')}</p>
 
         {isLoading && (
           <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="status-nature-loading">

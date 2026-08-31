@@ -17,6 +17,7 @@ import {
 import { AppMark } from '@/App';
 import { StarRating } from '@/components/star-rating';
 import { ImageLightbox } from '@/components/image-lightbox';
+import { useTranslation } from '@/lib/language';
 import {
   apiUrlFor,
   directionsUrlFor,
@@ -53,6 +54,7 @@ async function fetchCategories(): Promise<ApiCategory[]> {
 }
 
 export default function BrowsePage() {
+  const { tr } = useTranslation();
   const rawSearch = useSearch();
   const [, setLocation] = useLocation();
   const params = useMemo(() => new URLSearchParams(rawSearch), [rawSearch]);
@@ -173,14 +175,14 @@ const availableCategories = [
       <SiteNavbar />
 
       <main className="mx-auto max-w-[1280px] px-5 pb-14 pt-28 lg:px-10 lg:pb-20 lg:pt-32">
-        <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">Browse the city</p>
-        <h1 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">Find your Spot.</h1>
-        <p className="mt-5 max-w-[400px] text-sm leading-6 text-[#476269]">Search by name, neighbourhood, or the feeling you are after.</p>
+        <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">{tr('Browse the city', 'اكتشف المدينة', 'Explorer la ville')}</p>
+        <h1 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">{tr('Find your Spot.', 'اعثر على مكانك.', 'Trouvez votre endroit.')}</h1>
+        <p className="mt-5 max-w-[400px] text-sm leading-6 text-[#476269]">{tr('Search by name, neighbourhood, or the feeling you are after.', 'ابحث بالاسم أو الحي أو التجربة التي تريدها.', 'Recherchez par nom, quartier ou ambiance.')}</p>
 
         <div className="mt-9 flex flex-col gap-3 lg:flex-row">
           <div className="flex flex-1 items-center rounded-xl border border-[#cfc0aa] bg-[#f9f0df] px-4">
             <Search className="h-4 w-4 text-[#e58c70]" />
-            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search food, stays, services..." className="w-full bg-transparent px-3 py-3.5 text-sm text-[#183c44] outline-none placeholder:text-[#476269]/55" aria-label="Search all listings" data-testid="input-listing-search" />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={tr('Search food, stays, services...', 'ابحث عن الطعام والإقامة والخدمات...', 'Rechercher restaurants, séjours, services...')} className="w-full bg-transparent px-3 py-3.5 text-sm text-[#183c44] outline-none placeholder:text-[#476269]/55" aria-label={tr('Search all listings', 'البحث في كل الأماكن', 'Rechercher tous les lieux')} data-testid="input-listing-search" />
             {search && <button onClick={() => setSearch('')} aria-label="Clear search" className="p-1 text-[#476269]" data-testid="button-clear-search"><X className="h-4 w-4" /></button>}
           </div>
         </div>

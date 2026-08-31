@@ -4,8 +4,10 @@ import { useLocation } from 'wouter';
 import { ArrowLeft, IdCard, LogOut } from 'lucide-react';
 import { AppMark } from '@/App';
 import { fetchAccount, isLoggedIn, logout, updateAccount, type AccountUpdateInput } from '@/lib/api';
+import { useTranslation } from '@/lib/language';
 
 export default function AccountPage() {
+  const { tr } = useTranslation();
   const [, setLocation] = useLocation();
   const loggedIn = isLoggedIn();
   const queryClient = useQueryClient();
@@ -63,8 +65,8 @@ export default function AccountPage() {
       </header>
 
       <main className="mx-auto max-w-[900px] px-5 py-14 lg:px-10 lg:py-20">
-        <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">Account center</p>
-        <h1 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">Your details.</h1>
+        <p className="mb-3 font-mono-custom text-[10px] uppercase tracking-[.22em] text-[#e58c70]">{tr('Account center', 'مركز الحساب', 'Centre du compte')}</p>
+        <h1 className="font-display text-5xl leading-[.94] tracking-[-.04em] text-[#183c44] sm:text-6xl">{tr('Your details.', 'بياناتك.', 'Vos informations.')}</h1>
 
         {isLoading && <p className="mt-9 text-sm text-[#476269]">Loading your account…</p>}
 
