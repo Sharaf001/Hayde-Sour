@@ -69,7 +69,7 @@ export default function NaturePage() {
                   data-testid={`card-nature-${place.id}`}
                 >
                   {src ? (
-                    <img src={src} alt="" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                    <img src={src} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#a8c3a0]"><Leaf className="h-8 w-8 text-[#183c44]/40" /></div>
                   )}
@@ -102,7 +102,7 @@ export default function NaturePage() {
                       className="group relative h-20 w-full overflow-hidden rounded-xl"
                       data-testid={`button-view-nature-photo-${photo.position}`}
                     >
-                      <img src={src} alt="" className="h-full w-full object-cover" />
+                      <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
                       <span className="absolute inset-0 flex items-center justify-center bg-[#183c44]/0 text-[10px] font-bold uppercase tracking-[.08em] text-transparent transition group-hover:bg-[#183c44]/50 group-hover:text-[#f9f0df]">
                         Tap to view
                       </span>

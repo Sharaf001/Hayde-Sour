@@ -296,7 +296,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
 
       <main id="top" >
         <section className="relative min-h-[740px] overflow-hidden bg-[#183c44] text-[#f9f0df] lg:min-h-[775px]">
-          <img src="/tyre-hero.webp" alt="Tyre coastline and old sea castle at golden hour" className="absolute inset-0 h-full w-full object-cover opacity-55" data-testid="img-hero-tyre" />
+          <img src="/tyre-hero.webp" alt="Tyre coastline and old sea castle at golden hour" fetchPriority="high" decoding="sync" className="absolute inset-0 h-full w-full object-cover opacity-55" data-testid="img-hero-tyre" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,60,68,.98)_0%,rgba(24,60,68,.72)_37%,rgba(24,60,68,.22)_77%,rgba(24,60,68,.54)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#183c44] to-transparent" />
           <div className="relative mx-auto flex min-h-[740px] max-w-[1280px] items-end px-5 pb-24 pt-36 lg:min-h-[775px] lg:px-10 lg:pb-28">
@@ -347,7 +347,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               )}
               {featuredListings[0] && (
                 <button onClick={() => setLocation('/nature')} className="group relative min-h-[390px] overflow-hidden rounded-2xl text-left sm:row-span-2" data-testid={`card-featured-${featuredListings[0].id}`}>
-                  <img src={resolveImageSrc(featuredListings[0], galleryImageUrlFor(featuredListings[0].id)) || '/tyre-hero.jpg'} alt="" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <img src={resolveImageSrc(featuredListings[0], galleryImageUrlFor(featuredListings[0].id)) || '/tyre-hero.jpg'} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#183c44] via-[#183c44]/15 to-transparent" />
                   <div className="absolute bottom-0 p-6 text-[#f9f0df]">
                     <p className="font-display text-4xl leading-none">{featuredListings[0].name}</p>
@@ -357,7 +357,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               )}
               {featuredListings[1] && (
                 <button onClick={() => setLocation('/nature')} className="group relative min-h-[188px] overflow-hidden rounded-2xl text-left" data-testid={`card-featured-${featuredListings[1].id}`}>
-                  <img src={resolveImageSrc(featuredListings[1], galleryImageUrlFor(featuredListings[1].id)) || '/tyre-cafe.jpg'} alt="" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <img src={resolveImageSrc(featuredListings[1], galleryImageUrlFor(featuredListings[1].id)) || '/tyre-cafe.jpg'} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#183c44]/90 to-transparent" />
                   <div className="absolute bottom-5 left-5 text-[#f9f0df]">
                     <p className="font-display text-3xl leading-none">{featuredListings[1].name}</p>

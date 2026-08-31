@@ -208,7 +208,7 @@ const availableCategories = [
               const isSaved = saved.includes(listing.id);
               return (
                 <article key={listing.id} className="group relative flex min-h-[300px] flex-col overflow-hidden rounded-2xl border border-[#d7c9b4] bg-[#f9f0df] transition duration-300 hover:-translate-y-1 hover:shadow-lg" data-testid={`card-listing-${listing.id}`}>
-                  {resolveImageSrc(listing, imageUrlFor(listing.id)) && <div className="h-32 overflow-hidden"><img src={resolveImageSrc(listing, imageUrlFor(listing.id))!} alt="" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /></div>}
+                  {resolveImageSrc(listing, imageUrlFor(listing.id)) && <div className="h-32 overflow-hidden"><img src={resolveImageSrc(listing, imageUrlFor(listing.id))!} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /></div>}
                   <div className="flex flex-1 flex-col p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -266,7 +266,7 @@ const availableCategories = [
                       className="group relative h-20 w-full overflow-hidden rounded-xl"
                       data-testid={`button-view-photo-${photo.position}`}
                     >
-                      <img src={src} alt="" className="h-full w-full object-cover" />
+                      <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
                       <span className="absolute inset-0 flex items-center justify-center bg-[#183c44]/0 text-[10px] font-bold uppercase tracking-[.08em] text-transparent transition group-hover:bg-[#183c44]/50 group-hover:text-[#f9f0df]">
                         Tap to view
                       </span>
