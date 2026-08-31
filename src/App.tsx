@@ -151,11 +151,11 @@ function buildDayPlanICS(planItems: ReturnType<typeof buildTodaysPlan>, dateStr:
 
 export function AppMark() {
   return (
-    <div className="flex h-12 items-center overflow-visible" data-testid="brand-mark">
+    <div className="flex h-10 items-center overflow-visible sm:h-12" data-testid="brand-mark">
       <img
         src={`${import.meta.env.BASE_URL}hydesour1.png`}
         alt="Where To Go Sour"
-        className="h-[6rem] w-auto max-w-[290px] object-contain"
+        className="h-14 w-auto max-w-[180px] object-contain sm:h-[6rem] sm:max-w-[290px]"
         onError={(event) => {
           console.error('Could not load logo:', event.currentTarget.src);
         }}
@@ -296,7 +296,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
 
       <main id="top" >
         <section className="relative min-h-[740px] overflow-hidden bg-[#183c44] text-[#f9f0df] lg:min-h-[775px]">
-          <img src="/tyre-hero.webp" alt="Tyre coastline and old sea castle at golden hour" fetchPriority="high" decoding="sync" className="absolute inset-0 h-full w-full object-cover opacity-55" data-testid="img-hero-tyre" />
+          <img src="/tyre-hero.webp" alt="Tyre coastline and old sea castle at golden hour" decoding="sync" className="absolute inset-0 h-full w-full object-cover opacity-55" data-testid="img-hero-tyre" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(24,60,68,.98)_0%,rgba(24,60,68,.72)_37%,rgba(24,60,68,.22)_77%,rgba(24,60,68,.54)_100%)]" />
           <div className="absolute inset-x-0 bottom-0 h-48 bg-gradient-to-t from-[#183c44] to-transparent" />
           <div className="relative mx-auto flex min-h-[740px] max-w-[1280px] items-end px-5 pb-24 pt-36 lg:min-h-[775px] lg:px-10 lg:pb-28">

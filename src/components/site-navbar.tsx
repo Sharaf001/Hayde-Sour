@@ -42,15 +42,15 @@ export function SiteNavbar() {
     <header
       className={`inset-x-0 top-0 z-30 transition-all duration-300 ${headerStyle}`}
     >
-      <div className="mx-auto flex max-w-[1280px] items-center justify-between px-5 py-5 lg:px-10">
+      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-5 lg:px-10">
         <Link href="/" data-testid="link-brand-home">
           <AppMark />
         </Link>
 
-        <nav className="flex items-center gap-4 sm:gap-7" aria-label="Main navigation">
+        <nav className="flex shrink-0 items-center gap-3 sm:gap-7" aria-label="Main navigation">
           <Link
             href="/browse"
-            className={`text-[10px] font-bold uppercase tracking-[.14em] transition sm:text-[11px] ${
+            className={`text-[9px] font-bold uppercase tracking-[.08em] transition sm:text-[11px] sm:tracking-[.14em] ${
               location === '/browse'
                 ? 'text-[#f1c575]'
                 : 'text-[#f9f0df]/80 hover:text-[#f1c575]'
@@ -62,7 +62,7 @@ export function SiteNavbar() {
 
           <Link
             href="/nature"
-            className={`text-[10px] font-bold uppercase tracking-[.14em] transition sm:text-[11px] ${
+            className={`text-[9px] font-bold uppercase tracking-[.08em] transition sm:text-[11px] sm:tracking-[.14em] ${
               location === '/nature'
                 ? 'text-[#f1c575]'
                 : 'text-[#f9f0df]/80 hover:text-[#f1c575]'
@@ -103,11 +103,12 @@ export function SiteNavbar() {
 ) : (
   <Link
     href="/login"
-    className="flex items-center gap-2 rounded-full border border-[#f9f0df]/40 px-3 py-2 text-[10px] font-bold uppercase tracking-[.12em] text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575] sm:px-4 sm:text-[11px]"
+    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#f9f0df]/40 text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575] sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-2 sm:text-[11px] sm:font-bold sm:uppercase sm:tracking-[.12em]"
+    aria-label="Log in"
     data-testid="link-login"
   >
     <UserRound className="h-3.5 w-3.5" />
-    <span>Log in</span>
+    <span className="hidden sm:inline">Log in</span>
   </Link>
 )}
         </nav>
