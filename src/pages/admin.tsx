@@ -119,6 +119,25 @@ const emptyForm: ListingInput = {
 
 const emptyImage: ImageInputValue = { file: null, url: '' };
 
+async function optimizeImage(file: File): Promise<File> {
+  if (!('createImageBitmap' in window)) return file;
+
+  const source = await createImageBitmap(file);
+  const maxDimension = 1600;
+  const scale = Math.min(1, maxDimension / Math.max(source.width, source.height));
+  const width = Math.round(source.width * scale);
+  const height = Math.round(source.height * scale);
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  canvas.getContext('2d')?.drawImage(source, 0, 0, width, height);
+  source.close();
+
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/webp', 0.82));
+  if (!blob) throw new Error('Could not optimize image. Please try another file.');
+  return new File([blob], `${file.name.replace(/\.[^.]+$/, '') || 'image'}.webp`, { type: 'image/webp' });
+}
+
 function fileToBase64(file: File): Promise<{ base64: string; mime: string }> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -135,7 +154,8 @@ function fileToBase64(file: File): Promise<{ base64: string; mime: string }> {
 async function resolveImageValue(value: ImageInputValue): Promise<{ imageBase64?: string; imageMime?: string; imageUrl?: string }> {
   if (value.url) return { imageUrl: value.url };
   if (value.file) {
-    const { base64, mime } = await fileToBase64(value.file);
+    const optimizedFile = await optimizeImage(value.file);
+    const { base64, mime } = await fileToBase64(optimizedFile);
     return { imageBase64: base64, imageMime: mime };
   }
   return {};

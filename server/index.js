@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import crypto from 'crypto';
@@ -34,6 +35,7 @@ app.set('trust proxy', 1); // needed for correct client IPs behind a reverse pro
 app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
+app.use(compression());
 
 // CORS: locked to ALLOWED_ORIGINS (comma-separated) in production. If unset,
 // allows any origin - fine for local dev, NOT safe for a live deployment.
@@ -364,22 +366,28 @@ app.put('/api/account', requireAuth, async (req, res) => {
 
 const CATEGORY_SELECT = 'id, name';
 const CATEGORIES_CACHE_TTL_MS = 30 * 1000;
+const PUBLIC_JSON_CACHE_CONTROL = 'public, max-age=30, s-maxage=30, stale-while-revalidate=60';
 let categoriesCache = null;
 
 function invalidateCategoriesCache() {
   categoriesCache = null;
 }
 
+function sendPublicJson(res, body) {
+  res.set('Cache-Control', PUBLIC_JSON_CACHE_CONTROL);
+  res.json(body);
+}
+
 app.get('/api/categories', async (_req, res) => {
   if (categoriesCache && categoriesCache.expiresAt > Date.now()) {
-    return res.json(categoriesCache.rows);
+    return sendPublicJson(res, categoriesCache.rows);
   }
   try {
     const { rows } = await pool.query(
       `SELECT ${CATEGORY_SELECT} FROM categories ORDER BY name ASC`
     );
     categoriesCache = { rows, expiresAt: Date.now() + CATEGORIES_CACHE_TTL_MS };
-    res.json(rows);
+    sendPublicJson(res, rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to load categories' });
@@ -564,7 +572,7 @@ function invalidateListingsCache() {
 
 app.get('/api/listings', async (_req, res) => {
   if (listingsCache && listingsCache.expiresAt > Date.now()) {
-    return res.json(listingsCache.rows);
+    return sendPublicJson(res, listingsCache.rows);
   }
   try {
     const { rows } = await pool.query(
@@ -578,7 +586,7 @@ app.get('/api/listings', async (_req, res) => {
        ORDER BY l.category, l.name`
     );
      listingsCache = { rows, expiresAt: Date.now() + LISTINGS_CACHE_TTL_MS };
-    res.json(rows);
+    sendPublicJson(res, rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to load listings' });
@@ -769,7 +777,7 @@ app.get('/api/listings/:id/gallery', async (req, res) => {
        FROM listing_images WHERE listing_id = $1 ORDER BY position ASC`,
       [req.params.id]
     );
-    res.json(rows);
+    sendPublicJson(res, rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to load gallery' });
@@ -963,7 +971,7 @@ app.get('/api/gallery/:kind', async (req, res) => {
        ORDER BY sort_order ASC NULLS LAST, id ASC`,
       [kind]
     );
-    res.json(rows);
+    sendPublicJson(res, rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to load gallery items' });
@@ -1051,7 +1059,7 @@ app.get('/api/gallery/:id/gallery', async (req, res) => {
        FROM gallery_item_images WHERE gallery_item_id = $1 ORDER BY position ASC`,
       [req.params.id]
     );
-    res.json(rows);
+    sendPublicJson(res, rows);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to load gallery' });
