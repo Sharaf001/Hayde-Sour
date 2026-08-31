@@ -542,7 +542,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
 
 const PAGE_METADATA: Record<string, { title: string; description: string }> = {
   '/': {
-    title: 'Hayde Sour | Your Guide to Tyre, Lebanon',
+    title: 'Hayde Sour | هيدي صور',
     description: 'Discover cafes, restaurants, hotels, shops, nature, and local experiences in Tyre (Sour), Lebanon.',
   },
   '/browse': {
