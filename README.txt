@@ -84,11 +84,11 @@ seed" to backfill the three starter images.
     render.yaml, deploys the /server service, and provides the API URL.
     Enter secret variables in its dashboard. After deployment, confirm
     https://your-render-service.onrender.com/api/health works.
-  - Vercel: import the same repository as a Vite project. Set
-    VITE_API_URL to the HTTPS URL of the Render API, then deploy.
-    vercel.json preserves client-side routes such as /browse and /admin.
+  - Vercel: import the same repository as a Vite project, then deploy.
+    vercel.json proxies /api requests to Render and preserves client-side
+    routes such as /browse and /admin; no VITE_API_URL is required.
   - Render ALLOWED_ORIGINS must be the exact Vercel URL, for example
     https://where-to-go-sour.vercel.app. Redeploy Render after setting it.
   - When you later use a custom domain, add that exact HTTPS frontend
-    domain to ALLOWED_ORIGINS and change VITE_API_URL only if the API
-    also moves to a custom domain.
+    domain to ALLOWED_ORIGINS. Update vercel.json only if the API moves
+    to a new domain.
