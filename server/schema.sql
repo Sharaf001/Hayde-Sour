@@ -64,15 +64,18 @@ CREATE TABLE IF NOT EXISTS categories (
 );
 
 INSERT INTO categories (name)
-VALUES
-  ('Restaurants'),
-  ('Cafes'),
-  ('Hotels'),
-  ('Pharmacies'),
-  ('Hospitals'),
-  ('Shops'),
-  ('Home appliances')
-ON CONFLICT (name) DO NOTHING;
+SELECT name
+FROM (
+  VALUES
+    ('Restaurants'),
+    ('Cafes'),
+    ('Hotels'),
+    ('Pharmacies'),
+    ('Hospitals'),
+    ('Shops'),
+    ('Home appliances')
+) AS default_categories(name)
+WHERE NOT EXISTS (SELECT 1 FROM categories);
 
 CREATE TABLE IF NOT EXISTS listings (
   id             TEXT PRIMARY KEY,
