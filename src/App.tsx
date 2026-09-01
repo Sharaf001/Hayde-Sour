@@ -15,6 +15,7 @@ import SavedPage from '@/pages/saved';
 import LoginPage from '@/pages/login';
 import AccountPage from '@/pages/account';
 import NaturePage from '@/pages/nature';
+import HistoryPage from '@/pages/history';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import type { LucideIcon } from 'lucide-react';
 import {
@@ -644,6 +645,7 @@ function Router() {
         <Route path="/login" component={LoginPage} />
         <Route path="/account" component={AccountPage} />
         <Route path="/nature" component={NaturePage} />
+        <Route path="/history" component={HistoryPage} />
         <Route path="/admin" component={AdminPage} />
         <Route component={NotFound} />
       </Switch>

@@ -74,6 +74,18 @@ export function SiteNavbar() {
             {t('nature')}
           </Link>
 
+          <Link
+            href="/history"
+            className={`text-[9px] font-bold uppercase tracking-[.08em] transition sm:text-[11px] sm:tracking-[.14em] ${
+              location === '/history'
+                ? 'text-[#f1c575]'
+                : 'text-[#f9f0df]/80 hover:text-[#f1c575]'
+            }`}
+            data-testid="link-history"
+          >
+            {t('history')}
+          </Link>
+
           {loggedIn ? (
   <>
     <Link

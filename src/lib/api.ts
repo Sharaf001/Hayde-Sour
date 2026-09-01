@@ -381,12 +381,13 @@ export async function updateGalleryItemGallery(itemId: number, images: SubGaller
 }
 
 // ---------- Gallery items ("A few places we love" / "Where to go nature") ----------
-export type GalleryKind = 'featured' | 'nature';
+export type GalleryKind = 'featured' | 'nature' | 'history';
 
 export type GalleryItem = {
   id: number;
   name: string;
   location: string;
+  details: string | null;
   hasImage: boolean;
   imageUrl: string | null;
   latitude: number | null;
@@ -398,6 +399,7 @@ export type GalleryItemInput = {
   kind: GalleryKind;
   name: string;
   location: string;
+  details?: string;
   imageBase64?: string;
   imageMime?: string;
   imageUrl?: string;

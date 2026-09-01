@@ -958,13 +958,13 @@ app.post('/api/ratings', requireAuth, async (req, res) => {
 // Lightweight admin-managed entries (name + location + optional photo)
 // for the homepage/nature-page galleries. Separate from listings.
 
-const GALLERY_ITEM_SELECT = `id, name, location, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl",
+const GALLERY_ITEM_SELECT = `id, name, location, details, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl",
               latitude, longitude, sort_order AS "sortOrder"`;
 
 app.get('/api/gallery/:kind', async (req, res) => {
   const { kind } = req.params;
-  if (!['featured', 'nature'].includes(kind)) {
-    return res.status(400).json({ error: 'kind must be "featured" or "nature"' });
+  if (!['featured', 'nature', 'history'].includes(kind)) {
+    return res.status(400).json({ error: 'kind must be "featured", "nature" or "history"' });
   }
   try {
     const { rows } = await pool.query(
@@ -993,19 +993,19 @@ app.get('/api/gallery/image/:id', async (req, res) => {
 });
 
 app.post('/api/gallery', requireAdmin, async (req, res) => {
-  const { kind, name, location, imageBase64, imageMime, imageUrl, latitude, longitude, sortOrder } = req.body;
-  if (!['featured', 'nature'].includes(kind) || !name || !location) {
-    return res.status(400).json({ error: 'kind ("featured" or "nature"), name and location are required' });
+  const { kind, name, location, details, imageBase64, imageMime, imageUrl, latitude, longitude, sortOrder } = req.body;
+  if (!['featured', 'nature', 'history'].includes(kind) || !name || !location) {
+    return res.status(400).json({ error: 'kind ("featured", "nature" or "history"), name and location are required' });
   }
   const coordError = invalidCoordinate(latitude ?? null, longitude ?? null);
   if (coordError) return res.status(400).json({ error: coordError });
   const imageBuffer = imageBase64 ? Buffer.from(imageBase64, 'base64') : null;
   try {
     const { rows } = await pool.query(
-      `INSERT INTO gallery_items (kind, name, location, image_data, image_mime, image_url, latitude, longitude, sort_order)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)
+      `INSERT INTO gallery_items (kind, name, location, details, image_data, image_mime, image_url, latitude, longitude, sort_order)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
        RETURNING ${GALLERY_ITEM_SELECT}`,
-      [kind, name, location, imageBuffer, imageMime || null, imageUrl || null, latitude ?? null, longitude ?? null, sortOrder ?? null]
+      [kind, name, location, details || null, imageBuffer, imageMime || null, imageUrl || null, latitude ?? null, longitude ?? null, sortOrder ?? null]
     );
     res.status(201).json(rows[0]);
   } catch (err) {
@@ -1015,7 +1015,7 @@ app.post('/api/gallery', requireAdmin, async (req, res) => {
 });
 
 app.put('/api/gallery/:id', requireAdmin, async (req, res) => {
-  const { name, location, imageBase64, imageMime, imageUrl, latitude, longitude, sortOrder } = req.body;
+  const { name, location, details, imageBase64, imageMime, imageUrl, latitude, longitude, sortOrder } = req.body;
   const coordError = invalidCoordinate(latitude ?? null, longitude ?? null);
   if (coordError) return res.status(400).json({ error: coordError });
   const imageBuffer = imageBase64 ? Buffer.from(imageBase64, 'base64') : null;
@@ -1023,13 +1023,14 @@ app.put('/api/gallery/:id', requireAdmin, async (req, res) => {
     const { rows } = await pool.query(
       `UPDATE gallery_items SET
          name = COALESCE($2, name), location = COALESCE($3, location),
-         image_data = COALESCE($4, image_data), image_mime = COALESCE($5, image_mime),
-         image_url = COALESCE($6, image_url),
-         latitude = $7, longitude = $8,
-         sort_order = $9, updated_at = now()
+         details = COALESCE($4, details),
+         image_data = COALESCE($5, image_data), image_mime = COALESCE($6, image_mime),
+         image_url = COALESCE($7, image_url),
+         latitude = $8, longitude = $9,
+         sort_order = $10, updated_at = now()
        WHERE id = $1
        RETURNING ${GALLERY_ITEM_SELECT}`,
-      [req.params.id, name, location, imageBuffer, imageMime || null, imageUrl || null, latitude ?? null, longitude ?? null, sortOrder ?? null]
+      [req.params.id, name, location, details || null, imageBuffer, imageMime || null, imageUrl || null, latitude ?? null, longitude ?? null, sortOrder ?? null]
     );
     if (!rows.length) return res.status(404).json({ error: 'Not found' });
     res.json(rows[0]);

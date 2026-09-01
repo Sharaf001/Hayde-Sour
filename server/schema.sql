@@ -146,9 +146,10 @@ CREATE TABLE IF NOT EXISTS listing_images (
 -- Deliberately separate from listings - no hours/phone/rating/etc.
 CREATE TABLE IF NOT EXISTS gallery_items (
   id           SERIAL PRIMARY KEY,
-  kind         TEXT NOT NULL CHECK (kind IN ('featured', 'nature')),
+  kind         TEXT NOT NULL CHECK (kind IN ('featured', 'nature', 'history')),
   name         TEXT NOT NULL,
   location     TEXT NOT NULL,
+  details      TEXT,
   image_data   BYTEA,
   image_mime   TEXT,
   image_url    TEXT, -- alternative to uploading a file - either can be set
@@ -162,6 +163,9 @@ CREATE TABLE IF NOT EXISTS gallery_items (
 ALTER TABLE gallery_items ADD COLUMN IF NOT EXISTS image_url TEXT;
 ALTER TABLE gallery_items ADD COLUMN IF NOT EXISTS latitude DOUBLE PRECISION;
 ALTER TABLE gallery_items ADD COLUMN IF NOT EXISTS longitude DOUBLE PRECISION;
+ALTER TABLE gallery_items ADD COLUMN IF NOT EXISTS details TEXT;
+ALTER TABLE gallery_items DROP CONSTRAINT IF EXISTS gallery_items_kind_check;
+ALTER TABLE gallery_items ADD CONSTRAINT gallery_items_kind_check CHECK (kind IN ('featured', 'nature', 'history'));
 CREATE INDEX IF NOT EXISTS idx_gallery_items_kind ON gallery_items (kind);
 
 -- Up to 3 extra photos per gallery item (currently used by "Where to go

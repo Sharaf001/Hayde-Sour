@@ -17,7 +17,7 @@ export const languageOptions: LanguageOption[] = [
 
 const translations = {
   en: {
-    discover: 'Discover', nature: 'Nature', saved: 'Saved', account: 'Account center', login: 'Log in', backHome: 'Back home', logout: 'Log out',
+    discover: 'Discover', nature: 'Nature', history: 'History', saved: 'Saved', account: 'Account center', login: 'Log in', backHome: 'Back home', logout: 'Log out',
     heroLocation: 'Tyre, South Lebanon', heroLineOne: 'This is where', heroLineTwo: 'the good days', heroLineThree: 'begin.',
     heroText: 'A warm, useful guide to Sour - Start here.', heroSearch: 'Try "sea view", "coffee"...', search: 'Search',
     localShortcut: 'The local shortcut', localShortcutText: 'Ways to find your feet in the city.',
@@ -60,7 +60,7 @@ const translations = {
     notFound: '404 Page Not Found', notFoundMsg: 'Did you forget to add the page to the router?',
   },
   ar: {
-    discover: 'اكتشف', nature: 'الطبيعة', saved: 'المحفوظات', account: 'الحساب', login: 'تسجيل الدخول', backHome: 'العودة للرئيسية', logout: 'تسجيل الخروج',
+    discover: 'اكتشف', nature: 'الطبيعة', history: 'التاريخ', saved: 'المحفوظات', account: 'الحساب', login: 'تسجيل الدخول', backHome: 'العودة للرئيسية', logout: 'تسجيل الخروج',
     heroLocation: 'صور، جنوب لبنان', heroLineOne: 'هنا تبدأ', heroLineTwo: 'الأيام الجميلة', heroLineThree: '.',
     heroText: 'دليل دافئ وعملي لصور - ابدأ من هنا.', heroSearch: 'جرب "اطلالة بحرية" او "قهوة"...', search: 'بحث',
     localShortcut: 'الدليل المحلي', localShortcutText: 'طرق سهلة لاكتشاف المدينة.',
@@ -103,7 +103,7 @@ const translations = {
     notFound: '404 الصفحة غير موجودة', notFoundMsg: 'هل نسيت إضافة الصفحة إلى جهاز التوجيه؟',
   },
   fr: {
-    discover: 'Decouvrir', nature: 'Nature', saved: 'Enregistres', account: 'Mon compte', login: 'Connexion', backHome: 'Accueil', logout: 'Deconnexion',
+    discover: 'Decouvrir', nature: 'Nature', history: 'Histoire', saved: 'Enregistres', account: 'Mon compte', login: 'Connexion', backHome: 'Accueil', logout: 'Deconnexion',
     heroLocation: 'Tyr, Sud-Liban', heroLineOne: 'Ici commencent', heroLineTwo: 'les beaux jours', heroLineThree: '.',
     heroText: 'Un guide chaleureux et pratique de Sour - Commencez ici.', heroSearch: 'Essayez « vue mer », « café »...', search: 'Rechercher',
     localShortcut: 'Le raccourci local', localShortcutText: 'Des repères pour trouver vos marques en ville.',

@@ -488,12 +488,15 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
         <div className="mt-14">
           <GalleryManager kind="nature" title={'"Where to go nature" (gallery page)'} hint="Any number shown, in a photo grid." withSubGallery />
         </div>
+        <div className="mt-14">
+          <GalleryManager kind="history" title={'"History" (history page)'} hint="Timeline cards with photo and story text." withSubGallery={false} />
+        </div>
       </div>
     </div>
   );
 }
 
-const emptyGalleryForm = { name: '', location: '', sortOrder: '' as number | '', latitude: null as number | null, longitude: null as number | null };
+const emptyGalleryForm = { name: '', location: '', details: '', sortOrder: '' as number | '', latitude: null as number | null, longitude: null as number | null };
 
 function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKind; title: string; hint: string; withSubGallery: boolean }) {
   const queryClient = useQueryClient();
@@ -508,9 +511,9 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
       const imagePayload = await resolveImageValue(image);
       const sortOrder = form.sortOrder === '' ? null : Number(form.sortOrder);
       if (editingId) {
-        return updateGalleryItem(editingId, { name: form.name, location: form.location, sortOrder, latitude: form.latitude, longitude: form.longitude, ...imagePayload });
+        return updateGalleryItem(editingId, { name: form.name, location: form.location, details: form.details || undefined, sortOrder, latitude: form.latitude, longitude: form.longitude, ...imagePayload });
       }
-      const input: GalleryItemInput = { kind, name: form.name, location: form.location, sortOrder, latitude: form.latitude, longitude: form.longitude, ...imagePayload };
+      const input: GalleryItemInput = { kind, name: form.name, location: form.location, details: form.details || undefined, sortOrder, latitude: form.latitude, longitude: form.longitude, ...imagePayload };
       return createGalleryItem(input);
     },
     onSuccess: () => {
@@ -530,7 +533,7 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
 
   const startEdit = (item: GalleryItem) => {
     setEditingId(item.id);
-    setForm({ name: item.name, location: item.location, sortOrder: item.sortOrder ?? '', latitude: item.latitude, longitude: item.longitude });
+    setForm({ name: item.name, location: item.location, details: item.details ?? '', sortOrder: item.sortOrder ?? '', latitude: item.latitude, longitude: item.longitude });
     setImage(emptyImage);
   };
 
@@ -551,6 +554,16 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <input required placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-name`} />
           <input required placeholder="Location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-location`} />
+          {kind === 'history' && (
+            <textarea
+              placeholder="Historical text"
+              value={form.details}
+              onChange={(e) => setForm({ ...form, details: e.target.value })}
+              className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm sm:col-span-2"
+              rows={4}
+              data-testid={`input-gallery-${kind}-details`}
+            />
+          )}
           <input type="number" placeholder="Order (optional)" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: e.target.value === '' ? '' : Number(e.target.value) })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-order`} />
           <ImageInput value={image} onChange={setImage} label="Photo" testIdPrefix={`input-gallery-${kind}-image`} />
           <div className="sm:col-span-2">
@@ -597,6 +610,7 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
               <div className="flex-1 min-w-0">
                 <p className="truncate font-semibold text-[#183c44]">{item.name} {item.sortOrder != null && <span className="ml-1 rounded-full bg-[#f1c575] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[.08em] text-[#183c44]">#{item.sortOrder}</span>}</p>
                 <p className="truncate text-xs text-[#476269]">{item.location}</p>
+                {kind === 'history' && item.details && <p className="mt-1 line-clamp-2 text-xs text-[#476269]">{item.details}</p>}
               </div>
               <button onClick={() => startEdit(item)} className="rounded-full border border-[#183c44] px-3 py-1.5 text-[11px] font-bold uppercase tracking-[.08em] text-[#183c44]" data-testid={`button-edit-gallery-${kind}-${item.id}`}>
                 Edit
