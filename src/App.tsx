@@ -2,8 +2,9 @@
 import { SiteNavbar } from '@/components/site-navbar';
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { apiUrlFor, directionsUrlFor, fetchGallery, fetchListings, fetchSaved, galleryImageUrlFor, getCurrentUser, imageUrlFor, isLoggedIn, resolveImageSrc, saveListing, unsaveListing } from '@/lib/api';
+import { apiUrlFor, directionsUrlFor, fetchGallery, fetchListings, fetchSaved, galleryImageUrlFor, getCurrentUser, imageUrlFor, isLoggedIn, resolveImageSrc, saveListing, unsaveListing, type ApiListing, type GalleryItem } from '@/lib/api';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { BlurImage } from '@/components/blur-image';
 import { LanguageProvider, useTranslation } from '@/lib/language';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -72,59 +73,66 @@ export const categories: CategoryCard[] = [
 // Listings now live in Postgres and are served by the API in /server.
 // See src/lib/api.ts for the fetch/save helpers.
 
-// Each time slot has a few options; one is picked per slot using a seed
-// based on today's date, so the plan is the same for everyone all day
-// but changes automatically tomorrow.
-const planPools = [
-  {
-    time: '07:45',
-    icon: Coffee,
-    options: [
-      { title: 'Coffee before the heat', detail: 'Start at Dar Alma. Order Turkish coffee and something with rosewater.' },
-      { title: 'Coffee by the water', detail: 'Grab a seat at Mina Social Club and watch the boats come in.' },
-      { title: 'A quiet start', detail: 'Find any corner cafe in the old city and let the morning move slowly.' },
-    ],
-  },
-  {
-    time: '10:15',
-    icon: Map,
-    options: [
-      { title: 'Walk the old stones', detail: 'Follow the sea wall past the Roman columns and down to Al Mina.' },
-      { title: 'Wander the souk', detail: 'Get pleasantly lost in the covered market streets near the old city.' },
-      { title: 'Trace the harbour', detail: 'Follow the fishing harbour round to where the old city meets the sea.' },
-    ],
-  },
-  {
-    time: '13:00',
-    icon: Utensils,
-    options: [
-      { title: 'Lunch on the water', detail: 'Al Fanar for grilled catch, cold arak and a table facing the harbour.' },
-      { title: 'A long Lebanese lunch', detail: 'Le Phenicien for a generous spread with the sound of the waves below.' },
-      { title: 'Something simple', detail: 'A shaded table near the souk, whatever looks freshest that day.' },
-    ],
-  },
-  {
-    time: '17:40',
-    icon: Sparkles,
-    options: [
-      { title: 'Golden hour, properly', detail: 'Cross to the fishing harbour. The light catches the castle first.' },
-      { title: 'Sunset from the ruins', detail: 'Sit near the old columns as the sky turns gold over the sea.' },
-      { title: 'One last coffee', detail: 'End the day back at the marina with something cold in hand.' },
-    ],
-  },
-];
-
 function seededIndex(seed: string, length: number) {
   let hash = 0;
   for (let i = 0; i < seed.length; i++) hash = (hash * 31 + seed.charCodeAt(i)) >>> 0;
   return hash % length;
 }
 
-function buildTodaysPlan(dateStr: string) {
-  return planPools.map((slot, slotIndex) => {
-    const option = slot.options[seededIndex(`${dateStr}-${slotIndex}`, slot.options.length)];
-    return { time: slot.time, icon: slot.icon, ...option };
-  });
+// Picks one item from a list using a seed so the choice is stable for the
+// whole day but changes automatically tomorrow.
+function pickSeeded<T>(items: T[], seed: string): T | undefined {
+  if (items.length === 0) return undefined;
+  return items[seededIndex(seed, items.length)];
+}
+
+// The day plan is built from real places added in the admin panel (listings
+// + "where to go nature" entries) instead of hardcoded text, so it grows
+// with the database and stays the same for everyone for the whole day.
+function buildTodaysPlan(
+  dateStr: string,
+  pools: { cafes: ApiListing[]; restaurants: ApiListing[]; nature: GalleryItem[] },
+) {
+  const cafe = pickSeeded(pools.cafes, `${dateStr}-cafe`);
+  const naturePick1 = pickSeeded(pools.nature, `${dateStr}-nature1`);
+  const remainingNature = pools.nature.filter((item) => item.id !== naturePick1?.id);
+  const naturePick2 = pickSeeded(remainingNature.length ? remainingNature : pools.nature, `${dateStr}-nature2`);
+  const restaurant = pickSeeded(pools.restaurants, `${dateStr}-restaurant`);
+
+  return [
+    {
+      time: '07:45',
+      icon: Coffee,
+      title: cafe ? cafe.name : 'Coffee before the heat',
+      detail: cafe
+        ? `Start at ${cafe.name}${cafe.area ? ` in ${cafe.area}` : ''}.${cafe.description ? ` ${cafe.description}` : ''}`
+        : 'Find any corner cafe in the old city and let the morning move slowly.',
+    },
+    {
+      time: '10:15',
+      icon: Map,
+      title: naturePick1 ? naturePick1.name : 'Wander the old city',
+      detail: naturePick1
+        ? `Explore ${naturePick1.name}${naturePick1.location ? `, ${naturePick1.location}` : ''}.`
+        : 'Get pleasantly lost in the covered market streets near the old city.',
+    },
+    {
+      time: '13:00',
+      icon: Utensils,
+      title: restaurant ? restaurant.name : 'A long Lebanese lunch',
+      detail: restaurant
+        ? `Lunch at ${restaurant.name}${restaurant.area ? ` in ${restaurant.area}` : ''}.${restaurant.description ? ` ${restaurant.description}` : ''}`
+        : 'A shaded table near the souk, whatever looks freshest that day.',
+    },
+    {
+      time: '17:40',
+      icon: Sparkles,
+      title: naturePick2 ? naturePick2.name : 'Golden hour, properly',
+      detail: naturePick2
+        ? `End the day at ${naturePick2.name}${naturePick2.location ? `, ${naturePick2.location}` : ''}.`
+        : 'Cross to the fishing harbour. The light catches the castle first.',
+    },
+  ];
 }
 
 function buildDayPlanICS(planItems: ReturnType<typeof buildTodaysPlan>, dateStr: string) {
@@ -263,9 +271,29 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
   });
   const featuredListings = featuredItems.slice(0, 3);
 
+  const { data: naturePlaces = [] } = useQuery({
+    queryKey: ['gallery', 'nature'],
+    queryFn: () => fetchGallery('nature'),
+  });
+
   const todayStr = useMemo(() => new Date().toISOString().slice(0, 10), []);
-  const plan = useMemo(() => buildTodaysPlan(todayStr), [todayStr]);
+  const plan = useMemo(() => {
+    const cafes = listings.filter((item) => item.category === 'Cafes');
+    const restaurants = listings.filter((item) => item.category === 'Restaurants');
+    return buildTodaysPlan(todayStr, { cafes, restaurants, nature: naturePlaces });
+  }, [todayStr, listings, naturePlaces]);
   const dayName = useMemo(() => new Date().toLocaleDateString('en-US', { weekday: 'long' }), []);
+
+  // Live clock showing the current hour in Lebanon, regardless of the visitor's own timezone.
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(new Date()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
+  const lebanonTime = useMemo(
+    () => new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Beirut', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(now),
+    [now],
+  );
 
   const saveDayToCalendar = () => {
     const ics = buildDayPlanICS(plan, todayStr);
@@ -318,7 +346,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
                 <button type="submit" className="rounded-xl bg-[#e58c70] px-5 py-3 text-xs font-bold uppercase tracking-[.13em] text-[#fff8ed] transition hover:bg-[#d67558]" data-testid="button-hero-search">{t('search')}</button>
               </form>
               <div className="reveal reveal-delay-3 mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-bold uppercase tracking-[.13em] text-[#f9f0df]/60">
-                <span className="flex items-center gap-2"><Clock3 className="h-3.5 w-3.5 text-[#f1c575]" /> 22° · light sea breeze</span>
+                <span className="flex items-center gap-2" data-testid="text-lebanon-time"><Clock3 className="h-3.5 w-3.5 text-[#f1c575]" /> {lebanonTime} · Lebanon time</span>
                 <span className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-[#f1c575]" /> 33.27° N, 35.20° E</span>
                  <span className="flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-[#f1c575]" />
   Supported by Sawt Al Farah
@@ -349,7 +377,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               )}
               {featuredListings[0] && (
                 <button onClick={() => setLocation('/nature')} className="group relative min-h-[390px] overflow-hidden rounded-2xl text-left sm:row-span-2" data-testid={`card-featured-${featuredListings[0].id}`}>
-                  <img src={resolveImageSrc(featuredListings[0], galleryImageUrlFor(featuredListings[0].id)) || '/tyre-hero.jpg'} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <BlurImage src={resolveImageSrc(featuredListings[0], galleryImageUrlFor(featuredListings[0].id)) || '/tyre-hero.jpg'} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#183c44] via-[#183c44]/15 to-transparent" />
                   <div className="absolute bottom-0 p-6 text-[#f9f0df]">
                     <p className="font-display text-4xl leading-none">{featuredListings[0].name}</p>
@@ -359,7 +387,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               )}
               {featuredListings[1] && (
                 <button onClick={() => setLocation('/nature')} className="group relative min-h-[188px] overflow-hidden rounded-2xl text-left" data-testid={`card-featured-${featuredListings[1].id}`}>
-                  <img src={resolveImageSrc(featuredListings[1], galleryImageUrlFor(featuredListings[1].id)) || '/tyre-cafe.jpg'} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <BlurImage src={resolveImageSrc(featuredListings[1], galleryImageUrlFor(featuredListings[1].id)) || '/tyre-cafe.jpg'} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#183c44]/90 to-transparent" />
                   <div className="absolute bottom-5 left-5 text-[#f9f0df]">
                     <p className="font-display text-3xl leading-none">{featuredListings[1].name}</p>
@@ -524,7 +552,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#183c44]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" role="dialog" aria-modal="true" aria-label={`${selected.name} details`} data-testid="dialog-listing-details">
           <div className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
             <button onClick={() => setSelected(null)} className="absolute right-5 top-5 rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', 'إغلاق التفاصيل', 'Fermer les details')} data-testid="button-close-details"><X className="h-4 w-4" /></button>
-            {resolveImageSrc(selected, imageUrlFor(selected.id)) && <img src={resolveImageSrc(selected, imageUrlFor(selected.id))!} alt="" className="mb-6 h-44 w-full rounded-2xl object-cover" />}
+            {resolveImageSrc(selected, imageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, imageUrlFor(selected.id))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
             <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{selected.category} · {selected.tag}</p>
             <h2 className="mt-2 pr-8 font-display text-5xl leading-[.9]">{selected.name}</h2>
             <p className="mt-5 text-sm leading-6 text-[#476269]">{selected.description}</p>

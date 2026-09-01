@@ -4,6 +4,7 @@ import { SiteNavbar } from '@/components/site-navbar';
 import { ArrowLeft, ExternalLink, Leaf, MapPin, X } from 'lucide-react';
 import { AppMark } from '@/App';
 import { ImageLightbox } from '@/components/image-lightbox';
+import { BlurImage } from '@/components/blur-image';
 import { useTranslation } from '@/lib/language';
 import {
   directionsUrlFor,
@@ -41,8 +42,13 @@ export default function NaturePage() {
         <p className="mt-5 max-w-[430px] text-sm leading-6 text-[#476269]">{tr('Coastline, ruins and the quieter corners of Sour worth stepping outside for.', 'الساحل والآثار والزوايا الهادئة في صور التي تستحق الزيارة.', 'Le littoral, les ruines et les coins calmes de Sour à découvrir.')}</p>
 
         {isLoading && (
-          <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="status-nature-loading">
-            <p className="font-display text-3xl text-[#183c44]">{tr('Loading...', 'جاري التحميل...', 'Chargement...')}</p>
+          <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" data-testid="status-nature-loading">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="relative min-h-[260px] overflow-hidden rounded-2xl border border-[#d7c9b4] bg-[#f9f0df]">
+                <div className="h-full bg-[#d8ccb8]/70" />
+                <div className="pointer-events-none absolute inset-0 bg-[#183c44]/10 backdrop-blur-md" />
+              </div>
+            ))}
           </div>
         )}
         {isError && (
@@ -71,7 +77,7 @@ export default function NaturePage() {
                   data-testid={`card-nature-${place.id}`}
                 >
                   {src ? (
-                    <img src={src} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                    <BlurImage src={src} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#a8c3a0]"><Leaf className="h-8 w-8 text-[#183c44]/40" /></div>
                   )}
@@ -91,7 +97,7 @@ export default function NaturePage() {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#183c44]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" role="dialog" aria-modal="true" aria-label={`${selected.name} details`} data-testid="dialog-nature-details">
           <div className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
             <button onClick={() => setSelected(null)} className="absolute right-5 top-5 rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label="Close details" data-testid="button-close-nature-details"><X className="h-4 w-4" /></button>
-            {resolveImageSrc(selected, galleryImageUrlFor(selected.id)) && <img src={resolveImageSrc(selected, galleryImageUrlFor(selected.id))!} alt="" className="mb-6 h-44 w-full rounded-2xl object-cover" />}
+            {resolveImageSrc(selected, galleryImageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, galleryImageUrlFor(selected.id))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
             {extraPhotos.length > 0 && (
               <div className="mb-6 grid grid-cols-3 gap-2">
                 {extraPhotos.map((photo) => {
@@ -104,7 +110,7 @@ export default function NaturePage() {
                       className="group relative h-20 w-full overflow-hidden rounded-xl"
                       data-testid={`button-view-nature-photo-${photo.position}`}
                     >
-                      <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
+                      <BlurImage src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
                       <span className="absolute inset-0 flex items-center justify-center bg-[#183c44]/0 text-[10px] font-bold uppercase tracking-[.08em] text-transparent transition group-hover:bg-[#183c44]/50 group-hover:text-[#f9f0df]">
                         {tr('Tap to view', 'انقر للعرض', 'Appuyez pour afficher')}
                       </span>
