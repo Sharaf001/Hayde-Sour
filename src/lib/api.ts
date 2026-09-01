@@ -49,17 +49,18 @@ export function menuUrlFor(listingId: string): string {
   return apiUrlFor(`/api/listings/${listingId}/menu`);
 }
 
-// Real coordinates (when set) give a precise "Get directions" link;
-// otherwise falls back to a text search by name + area/location.
+// Real coordinates (when set) give a precise map pin link; otherwise falls
+// back to a text search by name + area/location. Uses the "search" endpoint
+// (just drops a pin) instead of "dir" (routing), since routing without a
+// known origin made Google Maps guess a starting point and produce wrong
+// directions - the app has no way to know the user's real live location.
 export function directionsUrlFor(item: { latitude: number | null; longitude: number | null; name: string; area?: string; location?: string }): string {
   if (item.latitude != null && item.longitude != null) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${item.latitude},${item.longitude}`;
+    return `https://www.google.com/maps/search/?api=1&query=${item.latitude},${item.longitude}`;
   }
   // No exact coordinates set in admin yet - fall back to a text destination.
-  // Uses the directions endpoint (not search) so it actually opens routing,
-  // matching the "Get directions" label, and Maps resolves the best match.
   const query = `${item.name}, ${item.area ?? item.location ?? ''}, Tyre Lebanon`;
-  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(query)}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }
 
 async function handle<T>(res: Response): Promise<T> {
