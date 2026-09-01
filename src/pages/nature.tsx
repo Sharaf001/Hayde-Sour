@@ -42,20 +42,20 @@ export default function NaturePage() {
 
         {isLoading && (
           <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="status-nature-loading">
-            <p className="font-display text-3xl text-[#183c44]">Loading…</p>
+            <p className="font-display text-3xl text-[#183c44]">{tr('Loading...', 'جاري التحميل...', 'Chargement...')}</p>
           </div>
         )}
         {isError && (
           <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="status-nature-error">
-            <p className="font-display text-3xl text-[#183c44]">Couldn't reach the API.</p>
-            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">Make sure the backend server in /server is running.</p>
+            <p className="font-display text-3xl text-[#183c44]">{tr('Couldn\'t reach the API.', 'لا يمكن الوصول إلى الخادم.', 'Impossible de joindre l\'API.')}</p>
+            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">{tr('Make sure the backend server in /server is running.', 'تأكد من تشغيل خادم الواجهة الخلفية في /server.', 'Assurez-vous que le serveur backend dans /server est en cours d\'execution.')}</p>
           </div>
         )}
         {!isLoading && !isError && naturePlaces.length === 0 && (
           <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="status-nature-empty">
             <Leaf className="mx-auto h-7 w-7 text-[#e58c70]" />
-            <h3 className="mt-5 font-display text-3xl text-[#183c44]">Nothing here yet.</h3>
-            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">Entries added in the admin panel will show up here.</p>
+            <h3 className="mt-5 font-display text-3xl text-[#183c44]">{tr('Nothing here yet.', 'لا يوجد شيء هنا بعد.', 'Rien pour le moment.')}</h3>
+            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">{tr('Entries added in the admin panel will show up here.', 'ستظهر الإدخالات المضافة من لوحة المسؤول هنا.', 'Les entrees ajoutees dans le panneau d\'administration apparaitront ici.')}</p>
           </div>
         )}
 
@@ -106,7 +106,7 @@ export default function NaturePage() {
                     >
                       <img src={src} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
                       <span className="absolute inset-0 flex items-center justify-center bg-[#183c44]/0 text-[10px] font-bold uppercase tracking-[.08em] text-transparent transition group-hover:bg-[#183c44]/50 group-hover:text-[#f9f0df]">
-                        Tap to view
+                        {tr('Tap to view', 'انقر للعرض', 'Appuyez pour afficher')}
                       </span>
                     </button>
                   );
@@ -115,7 +115,7 @@ export default function NaturePage() {
             )}
             <h2 className="mt-2 pr-8 font-display text-5xl leading-[.9]">{selected.name}</h2>
             <p className="mt-3 flex items-center gap-1.5 text-sm text-[#476269]"><MapPin className="h-4 w-4 text-[#e58c70]" /> {selected.location}</p>
-            <a href={directionsUrlFor(selected)} target="_blank" rel="noreferrer" className="mt-7 flex items-center justify-center gap-2 rounded-xl bg-[#183c44] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] hover:bg-[#24515a]" data-testid="link-get-directions-nature"><MapPin className="h-4 w-4 text-[#f1c575]" /> Get directions <ExternalLink className="h-3.5 w-3.5 opacity-60" /></a>
+            <a href={directionsUrlFor(selected)} target="_blank" rel="noreferrer" className="mt-7 flex items-center justify-center gap-2 rounded-xl bg-[#183c44] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] hover:bg-[#24515a]" data-testid="link-get-directions-nature"><MapPin className="h-4 w-4 text-[#f1c575]" /> {tr('Get directions', 'احصل على الاتجاهات', 'Obtenir l\'itineraire')} <ExternalLink className="h-3.5 w-3.5 opacity-60" /></a>
           </div>
         </div>
       )}
