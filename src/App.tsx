@@ -487,7 +487,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
           <div>
             <AppMark />
             <p className="mt-5 max-w-[330px] text-sm leading-6 text-[#476269]">
-              {tr('A lovingly practical guide to Sour, made for curious visitors and the people who call it home.', 'دليل عملي ودافئ لصور، صُنع للزوار الفضوليين ولمن يسمونها وطناً.', 'Un guide pratique et soigne de Sour, pour les visiteurs curieux et celles et ceux qui y habitent.')}
+              A lovingly practical guide to Sour, made for curious visitors and the people who call it home.
             </p>
           </div>
 
@@ -499,16 +499,19 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
                 className="h-16 w-auto max-w-[220px] object-contain"
               />
               <p className="mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#476269]">
-                {t('supportedBy')}
+                Supported By
               </p>
             </div>
 
             <div className="flex flex-wrap gap-x-7 gap-y-3 text-[10px] font-bold uppercase tracking-[.15em] text-[#476269]">
-              <a href="#top" className="hover:text-[#e58c70]" data-testid="footer-link-top">{t('backToTop')}</a>
-              <a href="/browse" className="hover:text-[#e58c70]" data-testid="footer-link-discover">{t('explorePlaces')}</a>
+              <a href="#top" className="hover:text-[#e58c70]" data-testid="footer-link-top">Back to top</a>
+              <a href="/browse" className="hover:text-[#e58c70]" data-testid="footer-link-discover">Explore places</a>
               <a href="/admin" className="hover:text-[#e58c70]" data-testid="footer-link-admin">Admin</a>
               <span className="font-mono-custom font-normal tracking-normal text-[#476269]/60">
                 Made for Sour · 2026
+              </span>
+              <span className="font-mono-custom font-normal tracking-normal text-[#476269]/60">
+                Build By @mmwebstudio
               </span>
             </div>
           </div>
