@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { BookOpenText, Clock3, MapPin, X } from 'lucide-react';
 import { SiteNavbar } from '@/components/site-navbar';
@@ -16,6 +16,10 @@ export default function HistoryPage() {
     queryKey: ['gallery', 'history'],
     queryFn: () => fetchGallery('history'),
   });
+
+  useEffect(() => {
+    document.title = tr('History of Tyre | Hayde Sour', 'تاريخ صور | هيدي صور', 'Histoire de Tyr | Hayde Sour');
+  }, [language, tr]);
 
   const localized = (english: string, arabic: string | null, french: string | null) => {
     if (language === 'ar') return arabic || english;
