@@ -1,4 +1,4 @@
-import { useState, type ImgHTMLAttributes } from 'react';
+import { useEffect, useRef, useState, type ImgHTMLAttributes } from 'react';
 import { cn } from '@/lib/utils';
 
 type BlurImageProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'className'> & {
@@ -18,6 +18,11 @@ export function BlurImage({
   ...props
 }: BlurImageProps) {
   const [loaded, setLoaded] = useState(false);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    setLoaded(Boolean(imageRef.current?.complete));
+  }, [src]);
 
   if (!src) return null;
 
@@ -25,6 +30,7 @@ export function BlurImage({
     <div className={cn('relative overflow-hidden', containerClassName)}>
       <img
         {...props}
+        ref={imageRef}
         src={src}
         alt={alt}
         onLoad={(event) => {
@@ -35,12 +41,12 @@ export function BlurImage({
           setLoaded(true);
           onError?.(event);
         }}
-        className={cn('transition-opacity duration-500', loaded ? 'opacity-100' : 'opacity-0', className)}
+        className={cn('transition-opacity duration-200', loaded ? 'opacity-100' : 'opacity-0', className)}
       />
       <span
         aria-hidden="true"
         className={cn(
-          'pointer-events-none absolute inset-0 bg-[#183c44]/20 backdrop-blur-md transition-opacity duration-500',
+          'pointer-events-none absolute inset-0 bg-[#183c44]/20 backdrop-blur-md transition-opacity duration-200',
           loaded ? 'opacity-0' : 'opacity-100',
           overlayClassName,
         )}

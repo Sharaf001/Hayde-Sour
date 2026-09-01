@@ -27,6 +27,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const app = express();
+const IMAGE_CACHE_CONTROL = 'public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800';
 app.set('trust proxy', 1); // needed for correct client IPs behind a reverse proxy (Render, Railway, etc.)
 // crossOriginResourcePolicy is relaxed to "cross-origin" because the
 // frontend runs on a different origin (different port/domain) than this
@@ -598,7 +599,7 @@ app.get('/api/listings/:id/image', async (req, res) => {
     const { rows } = await pool.query('SELECT image_data, image_mime FROM listings WHERE id = $1', [req.params.id]);
     if (!rows.length || !rows[0].image_data) return res.status(404).end();
     res.set('Content-Type', rows[0].image_mime || 'image/jpeg');
-    res.set('Cache-Control', 'public, max-age=86400');
+    res.set('Cache-Control', IMAGE_CACHE_CONTROL);
     res.send(rows[0].image_data);
   } catch (err) {
     console.error(err);
@@ -611,7 +612,7 @@ app.get('/api/listings/:id/logo', async (req, res) => {
     const { rows } = await pool.query('SELECT logo_data, logo_mime FROM listings WHERE id = $1', [req.params.id]);
     if (!rows.length || !rows[0].logo_data) return res.status(404).end();
     res.set('Content-Type', rows[0].logo_mime || 'image/png');
-    res.set('Cache-Control', 'public, max-age=86400');
+    res.set('Cache-Control', IMAGE_CACHE_CONTROL);
     res.send(rows[0].logo_data);
   } catch (err) {
     console.error(err);
@@ -624,7 +625,7 @@ app.get('/api/listings/:id/menu', async (req, res) => {
     const { rows } = await pool.query('SELECT menu_data, menu_mime FROM listings WHERE id = $1', [req.params.id]);
     if (!rows.length || !rows[0].menu_data) return res.status(404).end();
     res.set('Content-Type', rows[0].menu_mime || 'application/pdf');
-    res.set('Cache-Control', 'public, max-age=86400');
+    res.set('Cache-Control', IMAGE_CACHE_CONTROL);
     res.send(rows[0].menu_data);
   } catch (err) {
     console.error(err);
@@ -792,7 +793,7 @@ app.get('/api/listings/:id/gallery/:position/image', async (req, res) => {
     );
     if (!rows.length || !rows[0].image_data) return res.status(404).end();
     res.set('Content-Type', rows[0].image_mime || 'image/jpeg');
-    res.set('Cache-Control', 'public, max-age=86400');
+    res.set('Cache-Control', IMAGE_CACHE_CONTROL);
     res.send(rows[0].image_data);
   } catch (err) {
     console.error(err);
@@ -983,7 +984,7 @@ app.get('/api/gallery/image/:id', async (req, res) => {
     const { rows } = await pool.query('SELECT image_data, image_mime FROM gallery_items WHERE id = $1', [req.params.id]);
     if (!rows.length || !rows[0].image_data) return res.status(404).end();
     res.set('Content-Type', rows[0].image_mime || 'image/jpeg');
-    res.set('Cache-Control', 'public, max-age=86400');
+    res.set('Cache-Control', IMAGE_CACHE_CONTROL);
     res.send(rows[0].image_data);
   } catch (err) {
     console.error(err);
@@ -1074,7 +1075,7 @@ app.get('/api/gallery/:id/gallery/:position/image', async (req, res) => {
     );
     if (!rows.length || !rows[0].image_data) return res.status(404).end();
     res.set('Content-Type', rows[0].image_mime || 'image/jpeg');
-    res.set('Cache-Control', 'public, max-age=86400');
+    res.set('Cache-Control', IMAGE_CACHE_CONTROL);
     res.send(rows[0].image_data);
   } catch (err) {
     console.error(err);

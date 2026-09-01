@@ -377,7 +377,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               )}
               {featuredListings[0] && (
                 <button onClick={() => setLocation('/nature')} className="group relative min-h-[390px] overflow-hidden rounded-2xl text-left sm:row-span-2" data-testid={`card-featured-${featuredListings[0].id}`}>
-                  <BlurImage src={resolveImageSrc(featuredListings[0], galleryImageUrlFor(featuredListings[0].id)) || '/tyre-hero.jpg'} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <BlurImage src={resolveImageSrc(featuredListings[0], galleryImageUrlFor(featuredListings[0].id)) || '/tyre-hero.jpg'} alt="" loading="lazy" decoding="async" containerClassName="absolute inset-0" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#183c44] via-[#183c44]/15 to-transparent" />
                   <div className="absolute bottom-0 p-6 text-[#f9f0df]">
                     <p className="font-display text-4xl leading-none">{featuredListings[0].name}</p>
@@ -387,7 +387,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               )}
               {featuredListings[1] && (
                 <button onClick={() => setLocation('/nature')} className="group relative min-h-[188px] overflow-hidden rounded-2xl text-left" data-testid={`card-featured-${featuredListings[1].id}`}>
-                  <BlurImage src={resolveImageSrc(featuredListings[1], galleryImageUrlFor(featuredListings[1].id)) || '/tyre-cafe.jpg'} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <BlurImage src={resolveImageSrc(featuredListings[1], galleryImageUrlFor(featuredListings[1].id)) || '/tyre-cafe.jpg'} alt="" loading="lazy" decoding="async" containerClassName="absolute inset-0" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#183c44]/90 to-transparent" />
                   <div className="absolute bottom-5 left-5 text-[#f9f0df]">
                     <p className="font-display text-3xl leading-none">{featuredListings[1].name}</p>

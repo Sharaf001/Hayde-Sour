@@ -77,7 +77,7 @@ export default function NaturePage() {
                   data-testid={`card-nature-${place.id}`}
                 >
                   {src ? (
-                    <BlurImage src={src} alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                    <BlurImage src={src} alt="" loading="lazy" decoding="async" containerClassName="absolute inset-0" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-[#a8c3a0]"><Leaf className="h-8 w-8 text-[#183c44]/40" /></div>
                   )}
