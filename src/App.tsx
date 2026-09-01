@@ -320,7 +320,23 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
   };
 
   const goSearch = () => {
-    setLocation(search.trim() ? `/browse?q=${encodeURIComponent(search.trim())}` : '/browse');
+    const query = search.trim();
+    if (!query) {
+      setLocation('/browse');
+      return;
+    }
+
+    const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+    const matchesNature = naturePlaces.some((place) => {
+      const searchableText = [
+        place.name, place.nameAr, place.nameFr,
+        place.location, place.locationAr, place.locationFr,
+        place.details, place.detailsAr, place.detailsFr,
+      ].filter(Boolean).join(' ').toLowerCase();
+      return terms.every((term) => searchableText.includes(term));
+    });
+
+    setLocation(matchesNature ? `/nature?q=${encodeURIComponent(query)}` : `/browse?q=${encodeURIComponent(query)}`);
   };
 
   return (

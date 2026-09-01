@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { SiteNavbar } from '@/components/site-navbar';
 import { ArrowLeft, ExternalLink, Leaf, MapPin, X } from 'lucide-react';
+import { useSearch } from 'wouter';
 import { AppMark } from '@/App';
 import { ImageLightbox } from '@/components/image-lightbox';
 import { BlurImage } from '@/components/blur-image';
@@ -19,6 +20,7 @@ import {
 
 export default function NaturePage() {
   const { tr } = useTranslation();
+  const rawSearch = useSearch();
   const [selected, setSelected] = useState<GalleryItem | null>(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const detailSheet = useSwipeToClose<HTMLDivElement>(() => setSelected(null));
@@ -26,6 +28,16 @@ export default function NaturePage() {
   const { data: naturePlaces = [], isLoading, isError } = useQuery({
     queryKey: ['gallery', 'nature'],
     queryFn: () => fetchGallery('nature'),
+  });
+
+  const search = useMemo(() => new URLSearchParams(rawSearch).get('q')?.trim() || '', [rawSearch]);
+  const filteredNaturePlaces = naturePlaces.filter((place) => {
+    const searchableText = [
+      place.name, place.nameAr, place.nameFr,
+      place.location, place.locationAr, place.locationFr,
+      place.details, place.detailsAr, place.detailsFr,
+    ].filter(Boolean).join(' ').toLowerCase();
+    return search.toLowerCase().split(/\s+/).filter(Boolean).every((term) => searchableText.includes(term));
   });
 
   const { data: extraPhotos = [] } = useQuery({
@@ -59,17 +71,17 @@ export default function NaturePage() {
             <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">{tr('Make sure the backend server in /server is running.', 'تأكد من تشغيل خادم الواجهة الخلفية في /server.', 'Assurez-vous que le serveur backend dans /server est en cours d\'execution.')}</p>
           </div>
         )}
-        {!isLoading && !isError && naturePlaces.length === 0 && (
+        {!isLoading && !isError && filteredNaturePlaces.length === 0 && (
           <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="status-nature-empty">
             <Leaf className="mx-auto h-7 w-7 text-[#e58c70]" />
-            <h3 className="mt-5 font-display text-3xl text-[#183c44]">{tr('Nothing here yet.', 'لا يوجد شيء هنا بعد.', 'Rien pour le moment.')}</h3>
-            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">{tr('Entries added in the admin panel will show up here.', 'ستظهر الإدخالات المضافة من لوحة المسؤول هنا.', 'Les entrees ajoutees dans le panneau d\'administration apparaitront ici.')}</p>
+            <h3 className="mt-5 font-display text-3xl text-[#183c44]">{search ? tr('No matching nature places.', 'لا توجد وجهات طبيعية مطابقة.', 'Aucun lieu naturel correspondant.') : tr('Nothing here yet.', 'لا يوجد شيء هنا بعد.', 'Rien pour le moment.')}</h3>
+            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">{search ? tr('Try another search term.', 'جرب كلمة بحث أخرى.', 'Essayez un autre terme de recherche.') : tr('Entries added in the admin panel will show up here.', 'ستظهر الإدخالات المضافة من لوحة المسؤول هنا.', 'Les entrees ajoutees dans le panneau d\'administration apparaitront ici.')}</p>
           </div>
         )}
 
-        {!isLoading && !isError && naturePlaces.length > 0 && (
+        {!isLoading && !isError && filteredNaturePlaces.length > 0 && (
           <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {naturePlaces.map((place) => {
+            {filteredNaturePlaces.map((place) => {
               const src = resolveImageSrc(place, galleryImageUrlFor(place.id));
               return (
                 <button
