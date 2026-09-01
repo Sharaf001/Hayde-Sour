@@ -496,7 +496,10 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
   );
 }
 
-const emptyGalleryForm = { name: '', location: '', details: '', sortOrder: '' as number | '', latitude: null as number | null, longitude: null as number | null };
+const emptyGalleryForm = {
+  name: '', location: '', details: '', nameAr: '', nameFr: '', locationAr: '', locationFr: '', detailsAr: '', detailsFr: '',
+  sortOrder: '' as number | '', latitude: null as number | null, longitude: null as number | null,
+};
 
 function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKind; title: string; hint: string; withSubGallery: boolean }) {
   const queryClient = useQueryClient();
@@ -511,9 +514,9 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
       const imagePayload = await resolveImageValue(image);
       const sortOrder = form.sortOrder === '' ? null : Number(form.sortOrder);
       if (editingId) {
-        return updateGalleryItem(editingId, { name: form.name, location: form.location, details: form.details || undefined, sortOrder, latitude: form.latitude, longitude: form.longitude, ...imagePayload });
+        return updateGalleryItem(editingId, { ...form, details: form.details || undefined, nameAr: form.nameAr || undefined, nameFr: form.nameFr || undefined, locationAr: form.locationAr || undefined, locationFr: form.locationFr || undefined, detailsAr: form.detailsAr || undefined, detailsFr: form.detailsFr || undefined, sortOrder, ...imagePayload });
       }
-      const input: GalleryItemInput = { kind, name: form.name, location: form.location, details: form.details || undefined, sortOrder, latitude: form.latitude, longitude: form.longitude, ...imagePayload };
+      const input: GalleryItemInput = { kind, ...form, details: form.details || undefined, nameAr: form.nameAr || undefined, nameFr: form.nameFr || undefined, locationAr: form.locationAr || undefined, locationFr: form.locationFr || undefined, detailsAr: form.detailsAr || undefined, detailsFr: form.detailsFr || undefined, sortOrder, ...imagePayload };
       return createGalleryItem(input);
     },
     onSuccess: () => {
@@ -533,7 +536,7 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
 
   const startEdit = (item: GalleryItem) => {
     setEditingId(item.id);
-    setForm({ name: item.name, location: item.location, details: item.details ?? '', sortOrder: item.sortOrder ?? '', latitude: item.latitude, longitude: item.longitude });
+    setForm({ name: item.name, location: item.location, details: item.details ?? '', nameAr: item.nameAr ?? '', nameFr: item.nameFr ?? '', locationAr: item.locationAr ?? '', locationFr: item.locationFr ?? '', detailsAr: item.detailsAr ?? '', detailsFr: item.detailsFr ?? '', sortOrder: item.sortOrder ?? '', latitude: item.latitude, longitude: item.longitude });
     setImage(emptyImage);
   };
 
@@ -555,14 +558,15 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
           <input required placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-name`} />
           <input required placeholder="Location" value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-location`} />
           {kind === 'history' && (
-            <textarea
-              placeholder="Historical text"
-              value={form.details}
-              onChange={(e) => setForm({ ...form, details: e.target.value })}
-              className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm sm:col-span-2"
-              rows={4}
-              data-testid={`input-gallery-${kind}-details`}
-            />
+            <>
+              <textarea placeholder="Historical text (English)" value={form.details} onChange={(e) => setForm({ ...form, details: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm sm:col-span-2" rows={4} data-testid={`input-gallery-${kind}-details`} />
+              <input placeholder="Title (Arabic)" value={form.nameAr} onChange={(e) => setForm({ ...form, nameAr: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-name-ar`} />
+              <input placeholder="Title (French)" value={form.nameFr} onChange={(e) => setForm({ ...form, nameFr: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-name-fr`} />
+              <input placeholder="Period / location (Arabic)" value={form.locationAr} onChange={(e) => setForm({ ...form, locationAr: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-location-ar`} />
+              <input placeholder="Period / location (French)" value={form.locationFr} onChange={(e) => setForm({ ...form, locationFr: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-location-fr`} />
+              <textarea placeholder="Historical text (Arabic)" value={form.detailsAr} onChange={(e) => setForm({ ...form, detailsAr: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm sm:col-span-2" rows={4} data-testid={`input-gallery-${kind}-details-ar`} />
+              <textarea placeholder="Historical text (French)" value={form.detailsFr} onChange={(e) => setForm({ ...form, detailsFr: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm sm:col-span-2" rows={4} data-testid={`input-gallery-${kind}-details-fr`} />
+            </>
           )}
           <input type="number" placeholder="Order (optional)" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: e.target.value === '' ? '' : Number(e.target.value) })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid={`input-gallery-${kind}-order`} />
           <ImageInput value={image} onChange={setImage} label="Photo" testIdPrefix={`input-gallery-${kind}-image`} />

@@ -958,7 +958,9 @@ app.post('/api/ratings', requireAuth, async (req, res) => {
 // Lightweight admin-managed entries (name + location + optional photo)
 // for the homepage/nature-page galleries. Separate from listings.
 
-const GALLERY_ITEM_SELECT = `id, name, location, details, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl",
+const GALLERY_ITEM_SELECT = `id, name, location, details, name_ar AS "nameAr", name_fr AS "nameFr",
+              location_ar AS "locationAr", location_fr AS "locationFr", details_ar AS "detailsAr", details_fr AS "detailsFr",
+              (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl",
               latitude, longitude, sort_order AS "sortOrder"`;
 
 app.get('/api/gallery/:kind', async (req, res) => {
@@ -993,7 +995,7 @@ app.get('/api/gallery/image/:id', async (req, res) => {
 });
 
 app.post('/api/gallery', requireAdmin, async (req, res) => {
-  const { kind, name, location, details, imageBase64, imageMime, imageUrl, latitude, longitude, sortOrder } = req.body;
+  const { kind, name, location, details, nameAr, nameFr, locationAr, locationFr, detailsAr, detailsFr, imageBase64, imageMime, imageUrl, latitude, longitude, sortOrder } = req.body;
   if (!['featured', 'nature', 'history'].includes(kind) || !name || !location) {
     return res.status(400).json({ error: 'kind ("featured", "nature" or "history"), name and location are required' });
   }
@@ -1002,10 +1004,10 @@ app.post('/api/gallery', requireAdmin, async (req, res) => {
   const imageBuffer = imageBase64 ? Buffer.from(imageBase64, 'base64') : null;
   try {
     const { rows } = await pool.query(
-      `INSERT INTO gallery_items (kind, name, location, details, image_data, image_mime, image_url, latitude, longitude, sort_order)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+      `INSERT INTO gallery_items (kind, name, location, details, name_ar, name_fr, location_ar, location_fr, details_ar, details_fr, image_data, image_mime, image_url, latitude, longitude, sort_order)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
        RETURNING ${GALLERY_ITEM_SELECT}`,
-      [kind, name, location, details || null, imageBuffer, imageMime || null, imageUrl || null, latitude ?? null, longitude ?? null, sortOrder ?? null]
+      [kind, name, location, details || null, nameAr || null, nameFr || null, locationAr || null, locationFr || null, detailsAr || null, detailsFr || null, imageBuffer, imageMime || null, imageUrl || null, latitude ?? null, longitude ?? null, sortOrder ?? null]
     );
     res.status(201).json(rows[0]);
   } catch (err) {
@@ -1015,7 +1017,7 @@ app.post('/api/gallery', requireAdmin, async (req, res) => {
 });
 
 app.put('/api/gallery/:id', requireAdmin, async (req, res) => {
-  const { name, location, details, imageBase64, imageMime, imageUrl, latitude, longitude, sortOrder } = req.body;
+  const { name, location, details, nameAr, nameFr, locationAr, locationFr, detailsAr, detailsFr, imageBase64, imageMime, imageUrl, latitude, longitude, sortOrder } = req.body;
   const coordError = invalidCoordinate(latitude ?? null, longitude ?? null);
   if (coordError) return res.status(400).json({ error: coordError });
   const imageBuffer = imageBase64 ? Buffer.from(imageBase64, 'base64') : null;
@@ -1024,13 +1026,16 @@ app.put('/api/gallery/:id', requireAdmin, async (req, res) => {
       `UPDATE gallery_items SET
          name = COALESCE($2, name), location = COALESCE($3, location),
          details = COALESCE($4, details),
-         image_data = COALESCE($5, image_data), image_mime = COALESCE($6, image_mime),
-         image_url = COALESCE($7, image_url),
-         latitude = $8, longitude = $9,
-         sort_order = $10, updated_at = now()
+        name_ar = COALESCE($5, name_ar), name_fr = COALESCE($6, name_fr),
+        location_ar = COALESCE($7, location_ar), location_fr = COALESCE($8, location_fr),
+        details_ar = COALESCE($9, details_ar), details_fr = COALESCE($10, details_fr),
+        image_data = COALESCE($11, image_data), image_mime = COALESCE($12, image_mime),
+        image_url = COALESCE($13, image_url),
+        latitude = $14, longitude = $15,
+        sort_order = $16, updated_at = now()
        WHERE id = $1
        RETURNING ${GALLERY_ITEM_SELECT}`,
-      [req.params.id, name, location, details || null, imageBuffer, imageMime || null, imageUrl || null, latitude ?? null, longitude ?? null, sortOrder ?? null]
+      [req.params.id, name, location, details || null, nameAr || null, nameFr || null, locationAr || null, locationFr || null, detailsAr || null, detailsFr || null, imageBuffer, imageMime || null, imageUrl || null, latitude ?? null, longitude ?? null, sortOrder ?? null]
     );
     if (!rows.length) return res.status(404).json({ error: 'Not found' });
     res.json(rows[0]);

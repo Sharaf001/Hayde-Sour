@@ -388,6 +388,12 @@ export type GalleryItem = {
   name: string;
   location: string;
   details: string | null;
+  nameAr: string | null;
+  nameFr: string | null;
+  locationAr: string | null;
+  locationFr: string | null;
+  detailsAr: string | null;
+  detailsFr: string | null;
   hasImage: boolean;
   imageUrl: string | null;
   latitude: number | null;
@@ -400,6 +406,12 @@ export type GalleryItemInput = {
   name: string;
   location: string;
   details?: string;
+  nameAr?: string;
+  nameFr?: string;
+  locationAr?: string;
+  locationFr?: string;
+  detailsAr?: string;
+  detailsFr?: string;
   imageBase64?: string;
   imageMime?: string;
   imageUrl?: string;

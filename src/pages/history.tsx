@@ -8,7 +8,7 @@ import { useTranslation } from '@/lib/language';
 import { fetchGallery, galleryImageUrlFor, resolveImageSrc, type GalleryItem } from '@/lib/api';
 
 export default function HistoryPage() {
-  const { tr } = useTranslation();
+  const { language, tr } = useTranslation();
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const [selected, setSelected] = useState<GalleryItem | null>(null);
 
@@ -16,6 +16,12 @@ export default function HistoryPage() {
     queryKey: ['gallery', 'history'],
     queryFn: () => fetchGallery('history'),
   });
+
+  const localized = (english: string, arabic: string | null, french: string | null) => {
+    if (language === 'ar') return arabic || english;
+    if (language === 'fr') return french || english;
+    return english;
+  };
 
   return (
     <div className="noise min-h-[100dvh] bg-[#e9dfcd]">
@@ -56,18 +62,21 @@ export default function HistoryPage() {
           <div className="mt-9 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {historyItems.map((item) => {
               const src = resolveImageSrc(item, galleryImageUrlFor(item.id));
+              const name = localized(item.name, item.nameAr, item.nameFr);
+              const location = localized(item.location, item.locationAr, item.locationFr);
+              const details = localized(item.details || tr('No story text was added for this entry yet.', 'لم تتم إضافة نص لهذا العنصر بعد.', 'Aucun texte n\'a encore ete ajoute pour cette entree.'), item.detailsAr, item.detailsFr);
               return (
                 <article key={item.id} className="group flex min-h-[320px] flex-col overflow-hidden rounded-2xl border border-[#d7c9b4] bg-[#f9f0df] transition duration-300 hover:-translate-y-1 hover:shadow-lg" data-testid={`card-history-${item.id}`}>
                   {src && (
                     <button className="block h-40 overflow-hidden" onClick={() => setLightboxSrc(src)} data-testid={`button-open-history-photo-${item.id}`}>
-                      <BlurImage src={src} alt={item.name} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                      <BlurImage src={src} alt={name} loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
                     </button>
                   )}
                   <div className="flex flex-1 flex-col p-5">
                     <p className="font-mono-custom text-[9px] uppercase tracking-[.14em] text-[#e58c70]">{tr('Historical chapter', 'فصل تاريخي', 'Chapitre historique')}</p>
-                    <h2 className="mt-2 font-display text-3xl leading-none text-[#183c44]">{item.name}</h2>
-                    <p className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[.08em] text-[#476269]"><Clock3 className="h-3.5 w-3.5 text-[#e58c70]" /> {item.location}</p>
-                    <p className="mt-3 text-sm leading-6 text-[#476269] line-clamp-4">{item.details || tr('No story text was added for this entry yet.', 'لم تتم إضافة نص لهذا العنصر بعد.', 'Aucun texte n\'a encore ete ajoute pour cette entree.')}</p>
+                    <h2 className="mt-2 font-display text-3xl leading-none text-[#183c44]">{name}</h2>
+                    <p className="mt-3 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[.08em] text-[#476269]"><Clock3 className="h-3.5 w-3.5 text-[#e58c70]" /> {location}</p>
+                    <p className="mt-3 text-sm leading-6 text-[#476269] line-clamp-4">{details}</p>
                     <button onClick={() => setSelected(item)} className="mt-auto w-fit pt-4 text-[11px] font-bold uppercase tracking-[.12em] text-[#183c44] hover:text-[#e58c70]" data-testid={`button-open-history-${item.id}`}>
                       {tr('Read more', 'اقرأ المزيد', 'Lire plus')}
                     </button>
@@ -83,11 +92,11 @@ export default function HistoryPage() {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#183c44]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" role="dialog" aria-modal="true" aria-label={`${selected.name} details`} data-testid="dialog-history-details">
           <div className="relative max-h-[90dvh] w-full max-w-[700px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
             <button onClick={() => setSelected(null)} className="absolute right-5 top-5 rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', 'إغلاق التفاصيل', 'Fermer les details')} data-testid="button-close-history-details"><X className="h-4 w-4" /></button>
-            {resolveImageSrc(selected, galleryImageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, galleryImageUrlFor(selected.id))!} alt={selected.name} containerClassName="mb-6 h-52 w-full rounded-2xl" className="h-52 w-full rounded-2xl object-cover" />}
+            {resolveImageSrc(selected, galleryImageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, galleryImageUrlFor(selected.id))!} alt={localized(selected.name, selected.nameAr, selected.nameFr)} containerClassName="mb-6 h-52 w-full rounded-2xl" className="h-52 w-full rounded-2xl object-cover" />}
             <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{tr('Tyre history', 'تاريخ صور', 'Histoire de Tyr')}</p>
-            <h2 className="mt-2 pr-8 font-display text-5xl leading-[.9]">{selected.name}</h2>
-            <p className="mt-3 flex items-center gap-1.5 text-sm text-[#476269]"><MapPin className="h-4 w-4 text-[#e58c70]" /> {selected.location}</p>
-            <p className="mt-6 whitespace-pre-line text-sm leading-7 text-[#476269]">{selected.details || tr('No story text was added for this entry yet.', 'لم تتم إضافة نص لهذا العنصر بعد.', 'Aucun texte n\'a encore ete ajoute pour cette entree.')}</p>
+            <h2 className="mt-2 pr-8 font-display text-5xl leading-[.9]">{localized(selected.name, selected.nameAr, selected.nameFr)}</h2>
+            <p className="mt-3 flex items-center gap-1.5 text-sm text-[#476269]"><MapPin className="h-4 w-4 text-[#e58c70]" /> {localized(selected.location, selected.locationAr, selected.locationFr)}</p>
+            <p className="mt-6 whitespace-pre-line text-sm leading-7 text-[#476269]">{localized(selected.details || tr('No story text was added for this entry yet.', 'لم تتم إضافة نص لهذا العنصر بعد.', 'Aucun texte n\'a encore ete ajoute pour cette entree.'), selected.detailsAr, selected.detailsFr)}</p>
           </div>
         </div>
       )}
