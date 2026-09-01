@@ -194,14 +194,14 @@ const availableCategories = [
 
         {isLoading && (
           <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="status-listings-loading">
-            <p className="font-display text-3xl text-[#183c44]">Loading the guide…</p>
-            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">Fetching the latest places from the database.</p>
+            <p className="font-display text-3xl text-[#183c44]">{tr('Loading the guide...', 'جار تحميل الدليل...', 'Chargement du guide...')}</p>
+            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">{tr('Fetching the latest places from the database.', 'جاري جلب أحدث الأماكن من قاعدة البيانات.', 'Recuperation des derniers lieux de la base de donnees.')}</p>
           </div>
         )}
         {isError && (
           <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="status-listings-error">
-            <p className="font-display text-3xl text-[#183c44]">Couldn't reach the API.</p>
-            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">Make sure the backend server in /server is running and VITE_API_URL points to it.</p>
+            <p className="font-display text-3xl text-[#183c44]">{tr('Couldn\'t reach the API.', 'لا يمكن الوصول إلى الخادم.', 'Impossible de joindre l\'API.')}</p>
+            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">{tr('Make sure the backend server in /server is running and VITE_API_URL points to it.', 'تأكد من تشغيل خادم الواجهة الخلفية في /server وأن VITE_API_URL يشير إليه.', 'Assurez-vous que le serveur backend dans /server est en cours d\'execution et que VITE_API_URL pointe vers lui.')}</p>
           </div>
         )}
         {!isLoading && !isError && (
@@ -241,12 +241,12 @@ const availableCategories = [
         {!isLoading && !isError && filteredListings.length === 0 && (
           <div className="mt-9 rounded-2xl border border-dashed border-[#c9bba5] bg-[#f9f0df] px-6 py-16 text-center" data-testid="empty-search-results">
             <Search className="mx-auto h-7 w-7 text-[#e58c70]" />
-            <h3 className="mt-5 font-display text-3xl text-[#183c44]">That trail is quiet for now.</h3>
-            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">Try a broader search, or let us take you back to the full local edit.</p>
-            <button onClick={() => { setSearch(''); setActiveCategory('All'); setLocation('/browse'); }} className="mt-6 rounded-full bg-[#183c44] px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] transition hover:bg-[#24515a]" data-testid="button-reset-search">Show all places</button>
+            <h3 className="mt-5 font-display text-3xl text-[#183c44]">{tr('That trail is quiet for now.', 'هذا الطريق هادئ الآن.', 'Ce sentier est calme pour le moment.')}</h3>
+            <p className="mx-auto mt-2 max-w-[330px] text-sm leading-6 text-[#476269]">{tr('Try a broader search, or let us take you back to the full local edit.', 'جرب بحثا أوسع، أو دعنا نعيدك إلى الدليل المحلي الكامل.', 'Essayez une recherche plus large, ou laissez-nous vous ramener au guide local complet.')}</p>
+            <button onClick={() => { setSearch(''); setActiveCategory('All'); setLocation('/browse'); }} className="mt-6 rounded-full bg-[#183c44] px-5 py-3 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] transition hover:bg-[#24515a]" data-testid="button-reset-search">{tr('Show all places', 'عرض جميع الأماكن', 'Afficher tous les lieux')}</button>
           </div>
         )}
-        <p className="mt-6 font-mono-custom text-[10px] uppercase tracking-[.13em] text-[#476269]/70" data-testid="text-results-count">{filteredListings.length} places in the guide · curated for real life</p>
+        <p className="mt-6 font-mono-custom text-[10px] uppercase tracking-[.13em] text-[#476269]/70" data-testid="text-results-count">{filteredListings.length} {tr('places in the guide · curated for real life', 'أماكن في الدليل · منسقة للحياة الحقيقية', 'lieux dans le guide · choisis pour la vraie vie')}</p>
       </main>
 
       {saveNotice && <div className="fixed bottom-5 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2 rounded-full bg-[#183c44] px-4 py-3 text-xs font-semibold text-[#f9f0df] shadow-xl" role="status" data-testid="status-save-notice"><BookmarkCheck className="h-4 w-4 text-[#f1c575]" /> {saveNotice}</div>}
@@ -288,34 +288,34 @@ const availableCategories = [
             {(selected.instagramUrl || selected.websiteUrl || ((selected.category === 'Restaurants' || selected.category === 'Cafes') && (selected.hasMenu || selected.menuUrl))) && (
               <div className="mt-4 flex flex-wrap gap-3 text-[11px] font-bold uppercase tracking-[.08em] text-[#183c44]">
                 {selected.instagramUrl && (
-                  <a href={selected.instagramUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-instagram"><Instagram className="h-3.5 w-3.5" /> Instagram</a>
+                  <a href={selected.instagramUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-instagram"><Instagram className="h-3.5 w-3.5" /> {tr('Instagram', 'انستجرام', 'Instagram')}</a>
                 )}
                 {selected.websiteUrl && (
-                  <a href={selected.websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-website"><Globe className="h-3.5 w-3.5" /> Website</a>
+                  <a href={selected.websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-website"><Globe className="h-3.5 w-3.5" /> {tr('Website', 'الموقع الإلكتروني', 'Site web')}</a>
                 )}
                 {(selected.category === 'Restaurants' || selected.category === 'Cafes') && (selected.hasMenu || selected.menuUrl) && (
-                  <a href={resolveImageSrc({ hasImage: selected.hasMenu, imageUrl: selected.menuUrl }, menuUrlFor(selected.id))!} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-menu"><FileText className="h-3.5 w-3.5" /> View menu</a>
+                  <a href={resolveImageSrc({ hasImage: selected.hasMenu, imageUrl: selected.menuUrl }, menuUrlFor(selected.id))!} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-menu"><FileText className="h-3.5 w-3.5" /> {tr('View menu', 'عرض القائمة', 'Afficher le menu')}</a>
                 )}
               </div>
             )}
             <div className="mt-5 flex items-center justify-between rounded-xl bg-[#e9dfcd] p-3" data-testid="widget-rate-place">
               <div>
                 <p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">
-                  {ratingInfo?.avgRating != null ? `${ratingInfo.avgRating} average · ${ratingInfo.ratingCount} rating${ratingInfo.ratingCount === 1 ? '' : 's'}` : 'No community ratings yet'}
+                  {ratingInfo?.avgRating != null ? `${ratingInfo.avgRating} average · ${ratingInfo.ratingCount} rating${ratingInfo.ratingCount === 1 ? '' : 's'}` : tr('No community ratings yet', 'لا توجد تقييمات مجتمع حتى الآن', 'Pas encore d\'avis communautaire')}
                 </p>
-                <p className="mt-1 text-xs font-semibold">{loggedIn ? (ratingInfo?.yourRating ? 'Your rating' : 'Rate this place') : 'Log in to rate this place'}</p>
+                <p className="mt-1 text-xs font-semibold">{loggedIn ? (ratingInfo?.yourRating ? tr('Your rating', 'تقييمك', 'Votre avis') : tr('Rate this place', 'قيم هذا المكان', 'Noter ce lieu')) : tr('Log in to rate this place', 'سجل الدخول لتقييم هذا المكان', 'Connectez-vous pour noter ce lieu')}</p>
               </div>
               <StarRating value={loggedIn ? ratingInfo?.yourRating ?? null : null} onRate={rateSelected} />
             </div>
             <div className="mt-7 grid grid-cols-2 gap-3 text-xs">
-              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">Where</p><p className="mt-1 font-semibold">{selected.area}</p></div>
-              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">Hours</p><p className="mt-1 font-semibold">{selected.hours}</p></div>
-              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">Local note</p><p className="mt-1 font-semibold">{selected.rating} rating · {selected.price}</p></div>
-              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">Call</p><p className="mt-1 font-semibold">{selected.phone}</p></div>
+              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Where', 'الموقع', 'Ou')}</p><p className="mt-1 font-semibold">{selected.area}</p></div>
+              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Hours', 'الساعات', 'Horaires')}</p><p className="mt-1 font-semibold">{selected.hours}</p></div>
+              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Local note', 'ملاحظة محلية', 'Note locale')}</p><p className="mt-1 font-semibold">{selected.rating} rating · {selected.price}</p></div>
+              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Call', 'اتصل', 'Appeler')}</p><p className="mt-1 font-semibold">{selected.phone}</p></div>
             </div>
             <div className="mt-7 flex flex-col gap-2 sm:flex-row">
-              <a href={directionsUrlFor(selected)} target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#183c44] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] hover:bg-[#24515a]" data-testid="link-get-directions"><MapPin className="h-4 w-4 text-[#f1c575]" /> Get directions <ExternalLink className="h-3.5 w-3.5 opacity-60" /></a>
-              <button onClick={() => toggleSaved(selected)} className="flex items-center justify-center gap-2 rounded-xl border border-[#cfc0aa] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#183c44] hover:border-[#e58c70]" data-testid="button-save-details">{saved.includes(selected.id) ? <BookmarkCheck className="h-4 w-4 text-[#e58c70]" /> : <Bookmark className="h-4 w-4" />} {saved.includes(selected.id) ? 'Saved' : 'Save spot'}</button>
+              <a href={directionsUrlFor(selected)} target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#183c44] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] hover:bg-[#24515a]" data-testid="link-get-directions"><MapPin className="h-4 w-4 text-[#f1c575]" /> {tr('Get directions', 'احصل على الاتجاهات', 'Obtenir l\'itineraire')} <ExternalLink className="h-3.5 w-3.5 opacity-60" /></a>
+              <button onClick={() => toggleSaved(selected)} className="flex items-center justify-center gap-2 rounded-xl border border-[#cfc0aa] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#183c44] hover:border-[#e58c70]" data-testid="button-save-details">{saved.includes(selected.id) ? <BookmarkCheck className="h-4 w-4 text-[#e58c70]" /> : <Bookmark className="h-4 w-4" />} {saved.includes(selected.id) ? tr('Saved', 'محفوظة', 'Enregistre') : tr('Save spot', 'احفظ المكان', 'Enregistrer ce lieu')}</button>
             </div>
           </div>
         </div>
