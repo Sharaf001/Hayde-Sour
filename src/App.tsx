@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient
 import { apiUrlFor, directionsUrlFor, fetchGallery, fetchListings, fetchSaved, galleryImageUrlFor, getCurrentUser, imageUrlFor, isLoggedIn, resolveImageSrc, saveListing, unsaveListing, type ApiListing, type GalleryItem } from '@/lib/api';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { BlurImage } from '@/components/blur-image';
+import { useSwipeToClose } from '@/hooks/use-swipe-to-close';
 import { LanguageProvider, useTranslation } from '@/lib/language';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -196,6 +197,7 @@ function Home() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [selected, setSelected] = useState<Listing | null>(null);
   const [saveNotice, setSaveNotice] = useState('');
+  const homeSheet = useSwipeToClose<HTMLDivElement>(() => setSelected(null));
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -551,8 +553,9 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
 
       {selected && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#183c44]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" role="dialog" aria-modal="true" aria-label={`${selected.name} details`} data-testid="dialog-listing-details">
-          <div className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
-            <button onClick={() => setSelected(null)} className="absolute right-5 top-5 rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', 'إغلاق التفاصيل', 'Fermer les details')} data-testid="button-close-details"><X className="h-4 w-4" /></button>
+          <div ref={homeSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
+            <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-details" {...homeSheet.handleProps} />
+            <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', 'إغلاق التفاصيل', 'Fermer les details')} data-testid="button-close-details"><X className="h-4 w-4" /></button>
             {resolveImageSrc(selected, imageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, imageUrlFor(selected.id))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
             <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{selected.category} · {selected.tag}</p>
             <h2 className="mt-2 pr-8 font-display text-5xl leading-[.9]">{selected.name}</h2>

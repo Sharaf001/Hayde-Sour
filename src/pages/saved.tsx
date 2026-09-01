@@ -7,6 +7,7 @@ import { StarRating } from '@/components/star-rating';
 import { ImageLightbox } from '@/components/image-lightbox';
 import { BlurImage } from '@/components/blur-image';
 import { useTranslation } from '@/lib/language';
+import { useSwipeToClose } from '@/hooks/use-swipe-to-close';
 import {
   directionsUrlFor,
   fetchListingGallery,
@@ -29,6 +30,7 @@ export default function SavedPage() {
   const [selected, setSelected] = useState<ApiListing | null>(null);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const loggedIn = isLoggedIn();
+  const detailSheet = useSwipeToClose<HTMLDivElement>(() => setSelected(null));
 
   const { data: savedListings = [], isLoading, isError } = useQuery({
     queryKey: ['saved'],
@@ -142,8 +144,9 @@ export default function SavedPage() {
 
       {selected && (
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#183c44]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" role="dialog" aria-modal="true" aria-label={`${selected.name} details`} data-testid="dialog-saved-details">
-          <div className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
-            <button onClick={() => setSelected(null)} className="absolute right-5 top-5 rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label="Close details" data-testid="button-close-saved-details"><X className="h-4 w-4" /></button>
+          <div ref={detailSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
+            <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-saved-details" {...detailSheet.handleProps} />
+            <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label="Close details" data-testid="button-close-saved-details"><X className="h-4 w-4" /></button>
             {resolveImageSrc(selected, imageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, imageUrlFor(selected.id))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
             {extraPhotos.length > 0 && (
               <div className="mb-6 grid grid-cols-3 gap-2">
