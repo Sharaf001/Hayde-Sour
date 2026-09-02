@@ -82,7 +82,7 @@ export default function NaturePage() {
         {!isLoading && !isError && filteredNaturePlaces.length > 0 && (
           <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredNaturePlaces.map((place) => {
-              const src = resolveImageSrc(place, galleryImageUrlFor(place.id));
+              const src = resolveImageSrc(place, galleryImageUrlFor(place.id, place.updatedAt));
               return (
                 <button
                   key={place.id}
@@ -112,11 +112,11 @@ export default function NaturePage() {
           <div ref={detailSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
             <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-nature-details" {...detailSheet.handleProps} />
             <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label="Close details" data-testid="button-close-nature-details"><X className="h-4 w-4" /></button>
-            {resolveImageSrc(selected, galleryImageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, galleryImageUrlFor(selected.id))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
+            {resolveImageSrc(selected, galleryImageUrlFor(selected.id, selected.updatedAt)) && <BlurImage src={resolveImageSrc(selected, galleryImageUrlFor(selected.id, selected.updatedAt))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
             {extraPhotos.length > 0 && (
               <div className="mb-6 grid grid-cols-3 gap-2">
                 {extraPhotos.map((photo) => {
-                  const src = resolveImageSrc(photo, galleryItemSubGalleryImageUrlFor(selected.id, photo.position));
+                  const src = resolveImageSrc(photo, galleryItemSubGalleryImageUrlFor(selected.id, photo.position, photo.updatedAt));
                   if (!src) return null;
                   return (
                     <button

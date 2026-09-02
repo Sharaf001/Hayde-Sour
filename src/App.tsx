@@ -396,7 +396,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               )}
               {featuredListings[0] && (
                 <button onClick={() => setLocation('/nature')} className="group relative min-h-[390px] overflow-hidden rounded-2xl text-left sm:row-span-2" data-testid={`card-featured-${featuredListings[0].id}`}>
-                  <BlurImage src={resolveImageSrc(featuredListings[0], galleryImageUrlFor(featuredListings[0].id)) || '/tyre-hero.webp'} alt="" loading="lazy" decoding="async" containerClassName="absolute inset-0" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <BlurImage src={resolveImageSrc(featuredListings[0], galleryImageUrlFor(featuredListings[0].id, featuredListings[0].updatedAt)) || '/tyre-hero.webp'} alt="" loading="lazy" decoding="async" containerClassName="absolute inset-0" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#183c44] via-[#183c44]/15 to-transparent" />
                   <div className="absolute bottom-0 p-6 text-[#f9f0df]">
                     <p className="font-display text-4xl leading-none">{featuredListings[0].name}</p>
@@ -406,7 +406,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               )}
               {featuredListings[1] && (
                 <button onClick={() => setLocation('/nature')} className="group relative min-h-[188px] overflow-hidden rounded-2xl text-left" data-testid={`card-featured-${featuredListings[1].id}`}>
-                  <BlurImage src={resolveImageSrc(featuredListings[1], galleryImageUrlFor(featuredListings[1].id)) || '/tyre-cafe.jpg'} alt="" loading="lazy" decoding="async" containerClassName="absolute inset-0" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <BlurImage src={resolveImageSrc(featuredListings[1], galleryImageUrlFor(featuredListings[1].id, featuredListings[1].updatedAt)) || '/tyre-cafe.jpg'} alt="" loading="lazy" decoding="async" containerClassName="absolute inset-0" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#183c44]/90 to-transparent" />
                   <div className="absolute bottom-5 left-5 text-[#f9f0df]">
                     <p className="font-display text-3xl leading-none">{featuredListings[1].name}</p>
@@ -572,7 +572,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
           <div ref={homeSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
             <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-details" {...homeSheet.handleProps} />
             <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', 'إغلاق التفاصيل', 'Fermer les details')} data-testid="button-close-details"><X className="h-4 w-4" /></button>
-            {resolveImageSrc(selected, imageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, imageUrlFor(selected.id))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
+            {resolveImageSrc(selected, imageUrlFor(selected.id, selected.updatedAt)) && <BlurImage src={resolveImageSrc(selected, imageUrlFor(selected.id, selected.updatedAt))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
             <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{selected.category} · {selected.tag}</p>
             <h2 className="mt-2 pr-8 font-display text-5xl leading-[.9]">{selected.name}</h2>
             <p className="mt-5 text-sm leading-6 text-[#476269]">{selected.description}</p>

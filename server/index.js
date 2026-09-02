@@ -552,7 +552,7 @@ const LISTING_SELECT = `l.id, l.name, l.category, l.area, l.description, l.hours
               (l.logo_data IS NOT NULL) AS "hasLogo", l.logo_url AS "logoUrl",
               (l.menu_data IS NOT NULL) AS "hasMenu", l.menu_url AS "menuUrl",
               l.instagram_url AS "instagramUrl", l.website_url AS "websiteUrl",
-              l.latitude, l.longitude`;
+              l.latitude, l.longitude, extract(epoch from l.updated_at) AS "updatedAt"`;
 
 // Same columns, without the "l." alias - for use in INSERT/UPDATE
 // RETURNING clauses, where the table has no alias (unlike the SELECT
@@ -562,7 +562,7 @@ const LISTING_RETURNING = `id, name, category, area, description, hours, phone, 
               (logo_data IS NOT NULL) AS "hasLogo", logo_url AS "logoUrl",
               (menu_data IS NOT NULL) AS "hasMenu", menu_url AS "menuUrl",
               instagram_url AS "instagramUrl", website_url AS "websiteUrl",
-              latitude, longitude`;
+              latitude, longitude, extract(epoch from updated_at) AS "updatedAt"`;
 
 const LISTINGS_CACHE_TTL_MS = 30 * 1000;
 let listingsCache = null;
@@ -774,7 +774,7 @@ app.delete('/api/listings/:id', requireAdmin, async (req, res) => {
 app.get('/api/listings/:id/gallery', async (req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT position, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl"
+      `SELECT position, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl", extract(epoch from updated_at) AS "updatedAt"
        FROM listing_images WHERE listing_id = $1 ORDER BY position ASC`,
       [req.params.id]
     );
@@ -828,7 +828,7 @@ app.put('/api/listings/:id/gallery', requireAdmin, async (req, res) => {
       );
     }
     const { rows } = await pool.query(
-      `SELECT position, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl"
+      `SELECT position, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl", extract(epoch from updated_at) AS "updatedAt"
        FROM listing_images WHERE listing_id = $1 ORDER BY position ASC`,
       [req.params.id]
     );
@@ -961,7 +961,7 @@ app.post('/api/ratings', requireAuth, async (req, res) => {
 const GALLERY_ITEM_SELECT = `id, name, location, details, name_ar AS "nameAr", name_fr AS "nameFr",
               location_ar AS "locationAr", location_fr AS "locationFr", details_ar AS "detailsAr", details_fr AS "detailsFr",
               (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl",
-              latitude, longitude, sort_order AS "sortOrder"`;
+              latitude, longitude, sort_order AS "sortOrder", extract(epoch from updated_at) AS "updatedAt"`;
 
 app.get('/api/gallery/:kind', async (req, res) => {
   const { kind } = req.params;
@@ -1062,7 +1062,7 @@ app.delete('/api/gallery/:id', requireAdmin, async (req, res) => {
 app.get('/api/gallery/:id/gallery', async (req, res) => {
   try {
     const { rows } = await pool.query(
-      `SELECT position, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl"
+      `SELECT position, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl", extract(epoch from updated_at) AS "updatedAt"
        FROM gallery_item_images WHERE gallery_item_id = $1 ORDER BY position ASC`,
       [req.params.id]
     );
@@ -1116,7 +1116,7 @@ app.put('/api/gallery/:id/gallery', requireAdmin, async (req, res) => {
       );
     }
     const { rows } = await pool.query(
-      `SELECT position, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl"
+      `SELECT position, (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl", extract(epoch from updated_at) AS "updatedAt"
        FROM gallery_item_images WHERE gallery_item_id = $1 ORDER BY position ASC`,
       [req.params.id]
     );

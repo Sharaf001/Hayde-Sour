@@ -67,7 +67,7 @@ export default function HistoryPage() {
         {!isLoading && !isError && historyItems.length > 0 && (
           <div className="mt-9 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {historyItems.map((item) => {
-              const src = resolveImageSrc(item, galleryImageUrlFor(item.id));
+              const src = resolveImageSrc(item, galleryImageUrlFor(item.id, item.updatedAt));
               const name = localized(item.name, item.nameAr, item.nameFr);
               const location = localized(item.location, item.locationAr, item.locationFr);
               const details = localized(item.details || tr('No story text was added for this entry yet.', 'لم تتم إضافة نص لهذا العنصر بعد.', 'Aucun texte n\'a encore ete ajoute pour cette entree.'), item.detailsAr, item.detailsFr);
@@ -99,7 +99,7 @@ export default function HistoryPage() {
           <div ref={detailSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[700px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
             <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-history-details" {...detailSheet.handleProps} />
             <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', 'إغلاق التفاصيل', 'Fermer les details')} data-testid="button-close-history-details"><X className="h-4 w-4" /></button>
-            {resolveImageSrc(selected, galleryImageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, galleryImageUrlFor(selected.id))!} alt={localized(selected.name, selected.nameAr, selected.nameFr)} containerClassName="mb-6 h-52 w-full rounded-2xl" className="h-52 w-full rounded-2xl object-cover" />}
+            {resolveImageSrc(selected, galleryImageUrlFor(selected.id, selected.updatedAt)) && <BlurImage src={resolveImageSrc(selected, galleryImageUrlFor(selected.id, selected.updatedAt))!} alt={localized(selected.name, selected.nameAr, selected.nameFr)} containerClassName="mb-6 h-52 w-full rounded-2xl" className="h-52 w-full rounded-2xl object-cover" />}
             <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{tr('Tyre history', 'تاريخ صور', 'Histoire de Tyr')}</p>
             <h2 className="mt-2 pr-8 font-display text-5xl leading-[.9]">{localized(selected.name, selected.nameAr, selected.nameFr)}</h2>
             <p className="mt-3 flex items-center gap-1.5 text-sm text-[#476269]"><MapPin className="h-4 w-4 text-[#e58c70]" /> {localized(selected.location, selected.locationAr, selected.locationFr)}</p>

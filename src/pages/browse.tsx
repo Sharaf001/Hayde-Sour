@@ -217,7 +217,7 @@ const availableCategories = [
               const isSaved = saved.includes(listing.id);
               return (
                 <article key={listing.id} className="group relative flex min-h-[300px] flex-col overflow-hidden rounded-2xl border border-[#d7c9b4] bg-[#f9f0df] transition duration-300 hover:-translate-y-1 hover:shadow-lg" data-testid={`card-listing-${listing.id}`}>
-                  {resolveImageSrc(listing, imageUrlFor(listing.id)) && <BlurImage src={resolveImageSrc(listing, imageUrlFor(listing.id))!} alt="" loading="lazy" decoding="async" containerClassName="h-32" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />}
+                  {resolveImageSrc(listing, imageUrlFor(listing.id, listing.updatedAt)) && <BlurImage src={resolveImageSrc(listing, imageUrlFor(listing.id, listing.updatedAt))!} alt="" loading="lazy" decoding="async" containerClassName="h-32" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />}
                   <div className="flex flex-1 flex-col p-5">
                     <div className="flex items-start justify-between gap-3">
                       <div>
@@ -263,11 +263,11 @@ const availableCategories = [
           <div ref={detailSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
             <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-details" {...detailSheet.handleProps} />
             <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label="Close details" data-testid="button-close-details"><X className="h-4 w-4" /></button>
-            {resolveImageSrc(selected, imageUrlFor(selected.id)) && <BlurImage src={resolveImageSrc(selected, imageUrlFor(selected.id))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
+            {resolveImageSrc(selected, imageUrlFor(selected.id, selected.updatedAt)) && <BlurImage src={resolveImageSrc(selected, imageUrlFor(selected.id, selected.updatedAt))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
             {extraPhotos.length > 0 && (
               <div className="mb-6 grid grid-cols-3 gap-2">
                 {extraPhotos.map((photo) => {
-                  const src = resolveImageSrc(photo, listingGalleryImageUrlFor(selected.id, photo.position));
+                  const src = resolveImageSrc(photo, listingGalleryImageUrlFor(selected.id, photo.position, photo.updatedAt));
                   if (!src) return null;
                   return (
                     <button
@@ -286,8 +286,8 @@ const availableCategories = [
               </div>
             )}
             <div className="flex items-center gap-3">
-              {resolveImageSrc({ hasImage: selected.hasLogo, imageUrl: selected.logoUrl }, logoUrlFor(selected.id)) && (
-                <img src={resolveImageSrc({ hasImage: selected.hasLogo, imageUrl: selected.logoUrl }, logoUrlFor(selected.id))!} alt="" className="h-10 w-10 rounded-full border border-[#d7c9b4] bg-white object-contain p-1" />
+              {resolveImageSrc({ hasImage: selected.hasLogo, imageUrl: selected.logoUrl }, logoUrlFor(selected.id, selected.updatedAt)) && (
+                <img src={resolveImageSrc({ hasImage: selected.hasLogo, imageUrl: selected.logoUrl }, logoUrlFor(selected.id, selected.updatedAt))!} alt="" className="h-10 w-10 rounded-full border border-[#d7c9b4] bg-white object-contain p-1" />
               )}
               <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{selected.category} · {selected.tag}</p>
             </div>
@@ -302,7 +302,7 @@ const availableCategories = [
                   <a href={selected.websiteUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-website"><Globe className="h-3.5 w-3.5" /> {tr('Website', 'الموقع الإلكتروني', 'Site web')}</a>
                 )}
                 {(selected.category === 'Restaurants' || selected.category === 'Cafes') && (selected.hasMenu || selected.menuUrl) && (
-                  <a href={resolveImageSrc({ hasImage: selected.hasMenu, imageUrl: selected.menuUrl }, menuUrlFor(selected.id))!} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-menu"><FileText className="h-3.5 w-3.5" /> {tr('View menu', 'عرض القائمة', 'Afficher le menu')}</a>
+                  <a href={resolveImageSrc({ hasImage: selected.hasMenu, imageUrl: selected.menuUrl }, menuUrlFor(selected.id, selected.updatedAt))!} target="_blank" rel="noreferrer" className="flex items-center gap-1.5 hover:text-[#e58c70]" data-testid="link-menu"><FileText className="h-3.5 w-3.5" /> {tr('View menu', 'عرض القائمة', 'Afficher le menu')}</a>
                 )}
               </div>
             )}

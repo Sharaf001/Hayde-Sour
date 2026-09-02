@@ -27,6 +27,7 @@ export type ApiListing = {
   ratingCount: number;
   latitude: number | null;
   longitude: number | null;
+  updatedAt: number | null;
 };
 
 // A place's photo can be an uploaded file OR a pasted URL. The URL wins
@@ -37,16 +38,23 @@ export function resolveImageSrc(item: { hasImage: boolean; imageUrl: string | nu
   return null;
 }
 
-export function imageUrlFor(listingId: string): string {
-  return apiUrlFor(`/api/listings/${listingId}/image`);
+// Appends the record's updatedAt as a cache-busting version, so browsers
+// and CDNs fetch the new bytes immediately after an image is replaced
+// instead of serving a stale cached copy for up to a day.
+function withVersion(url: string, version?: number | null): string {
+  return version ? `${url}?v=${version}` : url;
 }
 
-export function logoUrlFor(listingId: string): string {
-  return apiUrlFor(`/api/listings/${listingId}/logo`);
+export function imageUrlFor(listingId: string, version?: number | null): string {
+  return withVersion(apiUrlFor(`/api/listings/${listingId}/image`), version);
 }
 
-export function menuUrlFor(listingId: string): string {
-  return apiUrlFor(`/api/listings/${listingId}/menu`);
+export function logoUrlFor(listingId: string, version?: number | null): string {
+  return withVersion(apiUrlFor(`/api/listings/${listingId}/logo`), version);
+}
+
+export function menuUrlFor(listingId: string, version?: number | null): string {
+  return withVersion(apiUrlFor(`/api/listings/${listingId}/menu`), version);
 }
 
 // Real coordinates (when set) give a precise map pin link; otherwise falls
@@ -343,11 +351,11 @@ export async function deleteListing(id: string): Promise<void> {
 
 // ---------- Sub-galleries (up to 3 extra photos) ----------
 // Shared shape used for both listings and gallery_items (nature entries).
-export type SubGalleryPhoto = { position: number; hasImage: boolean; imageUrl: string | null };
+export type SubGalleryPhoto = { position: number; hasImage: boolean; imageUrl: string | null; updatedAt: number | null };
 export type SubGallerySlotInput = { position: number; imageBase64?: string; imageMime?: string; imageUrl?: string; clear?: boolean };
 
-export function listingGalleryImageUrlFor(listingId: string, position: number): string {
-  return `${API_BASE_URL}/api/listings/${listingId}/gallery/${position}/image`;
+export function listingGalleryImageUrlFor(listingId: string, position: number, version?: number | null): string {
+  return withVersion(`${API_BASE_URL}/api/listings/${listingId}/gallery/${position}/image`, version);
 }
 
 export function fetchListingGallery(listingId: string): Promise<SubGalleryPhoto[]> {
@@ -363,8 +371,8 @@ export async function updateListingGallery(listingId: string, images: SubGallery
   return handle(res);
 }
 
-export function galleryItemSubGalleryImageUrlFor(itemId: number, position: number): string {
-  return `${API_BASE_URL}/api/gallery/${itemId}/gallery/${position}/image`;
+export function galleryItemSubGalleryImageUrlFor(itemId: number, position: number, version?: number | null): string {
+  return withVersion(`${API_BASE_URL}/api/gallery/${itemId}/gallery/${position}/image`, version);
 }
 
 export function fetchGalleryItemGallery(itemId: number): Promise<SubGalleryPhoto[]> {
@@ -399,6 +407,7 @@ export type GalleryItem = {
   latitude: number | null;
   longitude: number | null;
   sortOrder: number | null;
+  updatedAt: number | null;
 };
 
 export type GalleryItemInput = {
@@ -420,8 +429,8 @@ export type GalleryItemInput = {
   sortOrder?: number | null;
 };
 
-export function galleryImageUrlFor(id: number): string {
-  return `${API_BASE_URL}/api/gallery/image/${id}`;
+export function galleryImageUrlFor(id: number, version?: number | null): string {
+  return withVersion(`${API_BASE_URL}/api/gallery/image/${id}`, version);
 }
 
 export function fetchGallery(kind: GalleryKind): Promise<GalleryItem[]> {

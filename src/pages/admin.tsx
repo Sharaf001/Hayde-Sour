@@ -387,9 +387,9 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
             <input placeholder="Tag (optional)" value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid="input-listing-tag" />
             <textarea required placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm sm:col-span-2" rows={3} data-testid="input-listing-description" />
             <div>
-              {editingListing && resolveImageSrc(editingListing, imageUrlFor(editingListing.id)) && !clearImage && (
+              {editingListing && resolveImageSrc(editingListing, imageUrlFor(editingListing.id, editingListing.updatedAt)) && !clearImage && (
                 <div className="mb-2 flex items-center gap-2">
-                  <img src={resolveImageSrc(editingListing, imageUrlFor(editingListing.id))!} alt="" className="h-14 w-14 rounded-lg object-cover" />
+                  <img src={resolveImageSrc(editingListing, imageUrlFor(editingListing.id, editingListing.updatedAt))!} alt="" className="h-14 w-14 rounded-lg object-cover" />
                   <button type="button" onClick={() => setClearImage(true)} className="text-[10px] font-bold uppercase text-[#c1543f]" data-testid="button-remove-listing-image">Remove</button>
                 </div>
               )}
@@ -397,9 +397,9 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
               <ImageInput value={image} onChange={setImage} label="Photo" testIdPrefix="input-listing-image" />
             </div>
             <div>
-              {editingListing && resolveImageSrc({ hasImage: editingListing.hasLogo, imageUrl: editingListing.logoUrl }, logoUrlFor(editingListing.id)) && !clearLogo && (
+              {editingListing && resolveImageSrc({ hasImage: editingListing.hasLogo, imageUrl: editingListing.logoUrl }, logoUrlFor(editingListing.id, editingListing.updatedAt)) && !clearLogo && (
                 <div className="mb-2 flex items-center gap-2">
-                  <img src={resolveImageSrc({ hasImage: editingListing.hasLogo, imageUrl: editingListing.logoUrl }, logoUrlFor(editingListing.id))!} alt="" className="h-14 w-14 rounded-full border border-[#d7c9b4] bg-white object-contain p-1" />
+                  <img src={resolveImageSrc({ hasImage: editingListing.hasLogo, imageUrl: editingListing.logoUrl }, logoUrlFor(editingListing.id, editingListing.updatedAt))!} alt="" className="h-14 w-14 rounded-full border border-[#d7c9b4] bg-white object-contain p-1" />
                   <button type="button" onClick={() => setClearLogo(true)} className="text-[10px] font-bold uppercase text-[#c1543f]" data-testid="button-remove-listing-logo">Remove</button>
                 </div>
               )}
@@ -410,7 +410,7 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
               <div>
                 {editingListing && (editingListing.hasMenu || editingListing.menuUrl) && !clearMenu && (
                   <div className="mb-2 flex items-center gap-2">
-                    <a href={resolveImageSrc({ hasImage: editingListing.hasMenu, imageUrl: editingListing.menuUrl }, menuUrlFor(editingListing.id))!} target="_blank" rel="noreferrer" className="text-[11px] font-semibold text-[#183c44] underline">Current menu</a>
+                    <a href={resolveImageSrc({ hasImage: editingListing.hasMenu, imageUrl: editingListing.menuUrl }, menuUrlFor(editingListing.id, editingListing.updatedAt))!} target="_blank" rel="noreferrer" className="text-[11px] font-semibold text-[#183c44] underline">Current menu</a>
                     <button type="button" onClick={() => setClearMenu(true)} className="text-[10px] font-bold uppercase text-[#c1543f]" data-testid="button-remove-listing-menu">Remove</button>
                   </div>
                 )}
@@ -448,7 +448,7 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
               title="Extra photos (up to 3)"
               fetchFn={() => fetchListingGallery(editingId)}
               saveFn={(images) => updateListingGallery(editingId, images)}
-              imageUrlFn={(position) => listingGalleryImageUrlFor(editingId, position)}
+              imageUrlFn={(position, version) => listingGalleryImageUrlFor(editingId, position, version)}
               queryKey={['listing-gallery', editingId]}
             />
           </div>
@@ -458,7 +458,7 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
           <p className="font-display text-xl text-[#183c44]">All listings {isLoading ? '' : `(${listings.length})`}</p>
           <div className="mt-4 space-y-2">
             {listings.map((listing) => {
-              const src = resolveImageSrc(listing, imageUrlFor(listing.id));
+              const src = resolveImageSrc(listing, imageUrlFor(listing.id, listing.updatedAt));
               return (
                 <div key={listing.id} className="flex items-center gap-4 rounded-xl border border-[#d9cbb2] bg-[#f9f0df] p-3" data-testid={`row-listing-${listing.id}`}>
                   {src && <img src={src} alt="" className="h-12 w-12 rounded-lg object-cover" />}
@@ -598,7 +598,7 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
             title="Extra photos (up to 3)"
             fetchFn={() => fetchGalleryItemGallery(editingId)}
             saveFn={(images) => updateGalleryItemGallery(editingId, images)}
-            imageUrlFn={(position) => galleryItemSubGalleryImageUrlFor(editingId, position)}
+            imageUrlFn={(position, version) => galleryItemSubGalleryImageUrlFor(editingId, position, version)}
             queryKey={['gallery-item-gallery', editingId]}
           />
         </div>
@@ -607,7 +607,7 @@ function GalleryManager({ kind, title, hint, withSubGallery }: { kind: GalleryKi
       <div className="mt-4 space-y-2">
         {isLoading && <p className="text-sm text-[#476269]">Loading…</p>}
         {items.map((item) => {
-          const src = resolveImageSrc(item, galleryImageUrlFor(item.id));
+          const src = resolveImageSrc(item, galleryImageUrlFor(item.id, item.updatedAt));
           return (
             <div key={item.id} className="flex items-center gap-4 rounded-xl border border-[#d9cbb2] bg-[#f9f0df] p-3" data-testid={`row-gallery-${kind}-${item.id}`}>
               {src && <img src={src} alt="" className="h-12 w-12 rounded-lg object-cover" />}
@@ -646,7 +646,7 @@ function SubGalleryManager({
   title: string;
   fetchFn: () => Promise<SubGalleryPhoto[]>;
   saveFn: (images: SubGallerySlotInput[]) => Promise<SubGalleryPhoto[]>;
-  imageUrlFn: (position: number) => string;
+  imageUrlFn: (position: number, version?: number | null) => string;
   queryKey: unknown[];
 }) {
   const queryClient = useQueryClient();
@@ -685,7 +685,7 @@ function SubGalleryManager({
       <div className="mt-3 grid gap-4 sm:grid-cols-3">
         {[1, 2, 3].map((position) => {
           const existing = photos.find((p) => p.position === position);
-          const existingSrc = existing ? resolveImageSrc(existing, imageUrlFn(position)) : null;
+          const existingSrc = existing ? resolveImageSrc(existing, imageUrlFn(position, existing.updatedAt)) : null;
           return (
             <div key={position}>
               {existingSrc && !removeSlots[position] && (
