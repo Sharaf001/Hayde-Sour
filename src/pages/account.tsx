@@ -139,7 +139,7 @@ function SourCard({ fullName, code }: { fullName: string; code: string }) {
       <div className="absolute -bottom-14 -left-10 h-40 w-40 rounded-full bg-[#e58c70]/10" />
       <div className="relative flex items-start justify-between">
         <div>
-          <p className="font-mono-custom text-[9px] uppercase tracking-[.2em] text-[#f1c575]">Where To Go</p>
+          <p className="font-mono-custom text-[9px] uppercase tracking-[.2em] text-[#f1c575]">Hayde</p>
           <p className="font-display text-2xl leading-none">Sour Card</p>
         </div>
         <div className="h-8 w-11 rounded-md bg-gradient-to-br from-[#f1c575] to-[#d9a04f]" />
