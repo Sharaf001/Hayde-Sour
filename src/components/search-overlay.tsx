@@ -103,8 +103,8 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
   const bestRated = useMemo(
     () => [...listings]
-      .filter((item) => item.avgRating != null)
-      .sort((a, b) => (b.avgRating ?? 0) - (a.avgRating ?? 0))
+      .filter((item) => item.rating && !Number.isNaN(Number.parseFloat(item.rating)))
+      .sort((a, b) => Number.parseFloat(b.rating) - Number.parseFloat(a.rating))
       .slice(0, 5),
     [listings],
   );
@@ -113,8 +113,6 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
     () => listings.filter((item) => isOpenNow(item.hours, lebanonMinutes)).slice(0, 6),
     [listings, lebanonMinutes],
   );
-
-  if (!open) return null;
 
   if (!mounted) return null;
 
@@ -219,7 +217,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                       <span className="block text-xs text-[#476269]">{item.category}{item.area ? ` \u00b7 ${item.area}` : ''}</span>
                     </span>
                     <span className="flex items-center gap-1 text-xs font-bold text-[#183c44]">
-                      <Star className="h-3.5 w-3.5 fill-[#f1c575] text-[#f1c575]" /> {item.avgRating?.toFixed(1)}
+                      <Star className="h-3.5 w-3.5 fill-[#f1c575] text-[#f1c575]" /> {item.rating}
                     </span>
                   </button>
                 </li>
