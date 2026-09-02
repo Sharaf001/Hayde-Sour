@@ -47,12 +47,12 @@ export function SiteNavbar() {
     <header
       className={`inset-x-0 top-0 z-30 transition-all duration-300 ${headerStyle}`}
     >
-      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-3 px-4 py-3 sm:px-5 sm:py-5 lg:px-10">
-        <Link href="/" data-testid="link-brand-home">
+      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-5 sm:py-5 lg:px-10">
+        <Link href="/" data-testid="link-brand-home" className="shrink-0">
           <AppMark />
         </Link>
 
-        <nav className="flex shrink-0 items-center gap-2 sm:gap-7" aria-label="Main navigation">
+        <nav className="no-scrollbar flex min-w-0 items-center gap-1.5 overflow-x-auto sm:gap-7" aria-label="Main navigation">
           <Link
             href="/browse"
             className={`text-[9px] font-bold uppercase tracking-[.08em] transition sm:text-[11px] sm:tracking-[.14em] ${
@@ -120,7 +120,7 @@ export function SiteNavbar() {
 ) : (
   <Link
     href="/login"
-    className="flex h-9 w-9 items-center justify-center rounded-full border border-[#f9f0df]/40 text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575] sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-2 sm:text-[11px] sm:font-bold sm:uppercase sm:tracking-[.12em]"
+    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#f9f0df]/40 text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575] sm:h-auto sm:w-auto sm:gap-2 sm:px-4 sm:py-2 sm:text-[11px] sm:font-bold sm:uppercase sm:tracking-[.12em]"
     aria-label={t('login')}
     data-testid="link-login"
   >
@@ -132,19 +132,19 @@ export function SiteNavbar() {
             <button
               type="button"
               onClick={() => setSearchOpen(true)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#f9f0df]/40 text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575]"
+              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#f9f0df]/40 text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575] sm:h-9 sm:w-9"
               aria-label={t('openSearch')}
               data-testid="button-open-search"
             >
               <Search className="h-3.5 w-3.5" />
             </button>
           )}
-          <label className="flex h-9 items-center gap-1 rounded-full border border-[#f9f0df]/40 px-2 text-[#f9f0df] sm:h-auto sm:px-3 sm:py-2" aria-label="Select language">
+          <label className="flex h-8 shrink-0 items-center gap-0.5 rounded-full border border-[#f9f0df]/40 px-1.5 text-[#f9f0df] sm:h-auto sm:gap-1 sm:px-3 sm:py-2" aria-label="Select language">
             <Globe2 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <select
               value={language}
               onChange={(event) => setLanguage(event.target.value as typeof language)}
-              className="w-8 bg-transparent text-[9px] font-bold uppercase outline-none sm:w-14 sm:text-[10px]"
+              className="w-7 bg-transparent text-[9px] font-bold uppercase outline-none sm:w-14 sm:text-[10px]"
               aria-label="Language"
               data-testid="select-language"
             >

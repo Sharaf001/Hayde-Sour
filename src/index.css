@@ -270,6 +270,8 @@
   .reveal-delay-2 { animation-delay: .16s; }
   .reveal-delay-3 { animation-delay: .24s; }
   .float-slow { animation: float-slow 7s ease-in-out infinite; }
+  .no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
   @keyframes rise-in { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes float-slow { 0%,100% { transform: translateY(0) rotate(-1deg); } 50% { transform: translateY(-7px) rotate(1deg); } }
 }
