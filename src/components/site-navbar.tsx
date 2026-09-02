@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Bookmark, Globe2, UserRound } from 'lucide-react';
+import { Bookmark, Globe2, Search, UserRound } from 'lucide-react';
 import { Link, useLocation } from 'wouter';
 import { AppMark } from '@/App';
 import { isLoggedIn } from '@/lib/api';
 import { languageOptions, useTranslation } from '@/lib/language';
+import { SearchOverlay } from '@/components/search-overlay';
 
 // Delete the old isUserLoggedIn() function.
 
@@ -15,8 +16,10 @@ export function SiteNavbar() {
   const { language, setLanguage, t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [loggedIn, setLoggedIn] = useState(() => isLoggedIn());
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const isHomePage = location === '/';
+  const isBlurred = !isHomePage || scrolled;
   const headerStyle =
   isHomePage && !scrolled
     ? 'absolute bg-transparent'
@@ -125,6 +128,17 @@ export function SiteNavbar() {
     <span className="hidden sm:inline">{t('login')}</span>
   </Link>
 )}
+          {isBlurred && (
+            <button
+              type="button"
+              onClick={() => setSearchOpen(true)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-[#f9f0df]/40 text-[#f9f0df] transition hover:border-[#f1c575] hover:text-[#f1c575]"
+              aria-label={t('openSearch')}
+              data-testid="button-open-search"
+            >
+              <Search className="h-3.5 w-3.5" />
+            </button>
+          )}
           <label className="flex h-9 items-center gap-1 rounded-full border border-[#f9f0df]/40 px-2 text-[#f9f0df] sm:h-auto sm:px-3 sm:py-2" aria-label="Select language">
             <Globe2 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
             <select
@@ -143,6 +157,7 @@ export function SiteNavbar() {
           </label>
         </nav>
       </div>
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }
