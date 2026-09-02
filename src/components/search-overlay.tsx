@@ -40,6 +40,21 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const { t } = useTranslation();
   const [query, setQuery] = useState('');
   const [now, setNow] = useState(() => new Date());
+  // Keeps the panel in the DOM briefly after closing so the slide-up animation can play out.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (open) setMounted(true);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [open, onClose]);
 
   const exploreChips: ExploreChip[] = [
     { label: 'Restaurants', icon: Utensils, category: 'Restaurants' },
@@ -101,6 +116,8 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
   if (!open) return null;
 
+  if (!mounted) return null;
+
   const goToCategory = (category: string) => {
     onClose();
     setLocation(`/browse?category=${encodeURIComponent(category)}`);
@@ -122,30 +139,43 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#f9f0df]" data-testid="overlay-search">
-      <div className="mx-auto max-w-[720px] px-5 py-8 sm:px-8">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={onClose}
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#183c44] transition hover:bg-[#183c44]/10"
-            aria-label={t('closeSearch')}
-            data-testid="button-close-search"
-          >
-            <X className="h-5 w-5" />
-          </button>
-          <form
-            onSubmit={(event) => { event.preventDefault(); submitSearch(); }}
-            className="flex flex-1 items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-sm"
-          >
-            <Search className="h-4 w-4 shrink-0 text-[#183c44]/55" />
-            <input
-              autoFocus
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={t('heroSearch')}
-              className="min-w-0 flex-1 bg-transparent text-sm text-[#183c44] outline-none placeholder:text-[#183c44]/45"
-              aria-label={t('search')}
+    <div
+      className={`fixed inset-0 z-[60] transition-opacity duration-300 ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`}
+      data-testid="overlay-search"
+    >
+      <button
+        type="button"
+        onClick={onClose}
+        aria-label={t('closeSearch')}
+        className="absolute inset-0 h-full w-full cursor-default bg-[#183c44]/45 backdrop-blur-[2px]"
+      />
+      <div
+        className={`absolute inset-x-0 top-0 max-h-[88vh] overflow-y-auto rounded-b-[28px] bg-[#f9f0df] shadow-2xl transition-transform duration-300 ease-out ${open ? 'translate-y-0' : '-translate-y-full'}`}
+        onTransitionEnd={() => { if (!open) setMounted(false); }}
+      >
+        <div className="mx-auto max-w-[720px] px-5 pb-8 pt-24 sm:px-8 sm:pt-28">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[#183c44] transition hover:bg-[#183c44]/10"
+              aria-label={t('closeSearch')}
+              data-testid="button-close-search"
+            >
+              <X className="h-5 w-5" />
+            </button>
+            <form
+              onSubmit={(event) => { event.preventDefault(); submitSearch(); }}
+              className="flex flex-1 items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-sm"
+            >
+              <Search className="h-4 w-4 shrink-0 text-[#183c44]/55" />
+              <input
+                autoFocus={open}
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder={t('heroSearch')}
+                className="min-w-0 flex-1 bg-transparent text-sm text-[#183c44] outline-none placeholder:text-[#183c44]/45"
+                aria-label={t('search')}
               data-testid="input-overlay-search"
             />
           </form>
@@ -231,6 +261,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
               ))}
             </ul>
           )}
+        </div>
         </div>
       </div>
     </div>
