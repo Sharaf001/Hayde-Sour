@@ -552,7 +552,6 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
 
             <div className="flex flex-wrap gap-x-7 gap-y-3 text-[10px] font-bold uppercase tracking-[.15em] text-[#476269]">
               <a href="#top" className="hover:text-[#e58c70]" data-testid="footer-link-top">Back to top</a>
-              <a href="/browse" className="hover:text-[#e58c70]" data-testid="footer-link-discover">Explore places</a>
               <a href="/admin" className="hover:text-[#e58c70]" data-testid="footer-link-admin">Admin</a>
               <span className="font-mono-custom font-normal tracking-normal text-[#476269]/60">
                 Made for Sour · 2026
