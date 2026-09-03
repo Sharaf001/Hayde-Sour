@@ -49,10 +49,10 @@ CREATE TABLE IF NOT EXISTS password_resets (
 ALTER TABLE users ADD COLUMN IF NOT EXISTS username TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS first_name TEXT;
 ALTER TABLE users ADD COLUMN IF NOT EXISTS last_name TEXT;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS address TEXT;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS date_of_birth DATE;
-ALTER TABLE users ADD COLUMN IF NOT EXISTS sour_card_code TEXT;
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username);
+  -- Prevent migrations from deleting legacy listing data
+  -- ALTER TABLE listings DROP COLUMN IF EXISTS featured;
+  -- ALTER TABLE listings DROP COLUMN IF EXISTS featured_order;
+  -- ALTER TABLE listings DROP COLUMN IF EXISTS image; -- superseded by image_data/image_url
 CREATE UNIQUE INDEX IF NOT EXISTS idx_users_sour_card_code ON users (sour_card_code);
 
 CREATE EXTENSION IF NOT EXISTS pgcrypto;

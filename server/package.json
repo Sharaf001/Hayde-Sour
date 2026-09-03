@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node migrate.js && node index.js",
     "dev": "node --watch index.js",
-    "seed": "node seed.js"
+    "seed": "node seed.js",
+    "backup": "node backup.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

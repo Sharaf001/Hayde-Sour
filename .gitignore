@@ -2,5 +2,6 @@ node_modules/
 dist/
 .env
 .env.local
+server/backups/
 tsconfig.tsbuildinfo
 .DS_Store

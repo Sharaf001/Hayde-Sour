@@ -33,6 +33,13 @@ served over the API - nothing is hardcoded in the frontend anymore.
   Load the starting listings (run once):
     npm run seed
 
+  Create a database backup before migrations or major admin changes:
+    npm run backup
+  This requires the PostgreSQL client tools (`pg_dump`) and writes a
+  timestamped dump to server/backups/ by default. Keep a copy outside the
+  server and GitHub. Restore a dump with:
+    pg_restore --clean --if-exists --dbname "your-connection-string" sour-backup.dump
+
   Start the API server:
     npm run dev
   It runs on http://localhost:4000 by default.
