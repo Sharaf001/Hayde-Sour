@@ -4,7 +4,7 @@ services:
     runtime: node
     rootDir: server
     buildCommand: npm ci
-    startCommand: node migrate.js && npm start
+    startCommand: npm start
     healthCheckPath: /api/health
     envVars:
       - key: NODE_ENV
