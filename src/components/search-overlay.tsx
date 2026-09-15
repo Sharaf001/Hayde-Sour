@@ -13,15 +13,33 @@ type SearchOverlayProps = {
 
 type ExploreChip = { label: string; icon: LucideIcon; category?: string; path?: string };
 
-// Times can arrive as "12:00 – 23:30", "Reception 24 hours" or plain text -
-// this pulls out either an explicit range or the "always open" case.
+// Times can arrive as "12:00 – 23:30", "7:00 am till 12:00 am",
+// "Reception 24 hours" or plain text - this pulls out either an explicit
+// range (12-hour with am/pm, or 24-hour with a dash) or the "always open" case.
 function parseHoursRange(hours: string): { start: number; end: number } | 'always' | null {
   const lower = hours.toLowerCase();
   if (lower.includes('24 hour') || lower.includes('24/7')) return 'always';
-  const match = hours.match(/(\d{1,2}):(\d{2})\s*[-\u2013\u2014]\s*(\d{1,2}):(\d{2})/);
+
+  const match = hours.match(
+    /(\d{1,2}):(\d{2})\s*(am|pm)?\s*(?:-|–|—|to|till|until)\s*(\d{1,2}):(\d{2})\s*(am|pm)?/i
+  );
   if (!match) return null;
-  const start = Number(match[1]) * 60 + Number(match[2]);
-  const end = Number(match[3]) * 60 + Number(match[4]);
+
+  const to24 = (hourStr: string, meridiemRaw?: string) => {
+    let hour = Number(hourStr);
+    const meridiem = meridiemRaw?.toLowerCase();
+    if (meridiem === 'pm' && hour !== 12) hour += 12;
+    if (meridiem === 'am' && hour === 12) hour = 0;
+    return hour;
+  };
+
+  // If only one side states am/pm, apply it to the other side too
+  // (e.g. "9 - 5 pm" implies both are pm-relative unless otherwise obvious).
+  const meridiem1 = match[3] || match[6];
+  const meridiem2 = match[6] || match[3];
+
+  const start = to24(match[1], meridiem1) * 60 + Number(match[2]);
+  const end = to24(match[4], meridiem2) * 60 + Number(match[5]);
   return { start, end };
 }
 
@@ -30,7 +48,7 @@ function isOpenNow(hours: string, nowMinutes: number): boolean {
   if (range === 'always') return true;
   if (!range) return false;
   const { start, end } = range;
-  // Handles ranges that cross midnight (e.g. 20:00 - 02:00).
+  // Handles ranges that cross midnight (e.g. 20:00 - 02:00, or "till 12:00 am").
   if (start <= end) return nowMinutes >= start && nowMinutes < end;
   return nowMinutes >= start || nowMinutes < end;
 }
