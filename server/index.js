@@ -194,7 +194,7 @@ app.post('/api/auth/register', registerLimiter, async (req, res) => {
       [email.toLowerCase(), username.toLowerCase(), passwordHash, firstName, lastName, address, dateOfBirth, code, expiresAt]
     );
 
-    await sendEmail({ to: email, subject: 'Confirm your email - Where To Go Sour', html: verificationEmailHtml(code) });
+    await sendEmail({ to: email, subject: 'Confirm your email - Hayde Sour', html: verificationEmailHtml(code) });
     res.status(201).json({ pending: true, email: email.toLowerCase() });
   } catch (err) {
     console.error(err);
@@ -211,7 +211,7 @@ app.post('/api/auth/resend-code', registerLimiter, async (req, res) => {
     const code = generateCardCode();
     const expiresAt = new Date(Date.now() + CODE_TTL_MS);
     await pool.query('UPDATE pending_signups SET code = $2, expires_at = $3 WHERE id = $1', [rows[0].id, code, expiresAt]);
-    await sendEmail({ to: email, subject: 'Your new code - Where To Go Sour', html: verificationEmailHtml(code) });
+    await sendEmail({ to: email, subject: 'Your new code - Hayde Sour', html: verificationEmailHtml(code) });
     res.json({ ok: true });
   } catch (err) {
     console.error(err);
@@ -285,7 +285,7 @@ app.post('/api/auth/forgot-password', forgotPasswordLimiter, async (req, res) =>
     const expiresAt = new Date(Date.now() + CODE_TTL_MS);
     await pool.query('DELETE FROM password_resets WHERE user_id = $1', [user.id]);
     await pool.query('INSERT INTO password_resets (user_id, code, expires_at) VALUES ($1,$2,$3)', [user.id, code, expiresAt]);
-    await sendEmail({ to: user.email, subject: 'Reset your password - Where To Go Sour', html: resetPasswordEmailHtml(code) });
+    await sendEmail({ to: user.email, subject: 'Reset your password - Hayde Sour', html: resetPasswordEmailHtml(code) });
     res.json({ ok: true });
   } catch (err) {
     console.error(err);

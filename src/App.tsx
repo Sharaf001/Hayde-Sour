@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { SiteNavbar } from '@/components/site-navbar';
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -157,7 +157,7 @@ function buildDayPlanICS(planItems: ReturnType<typeof buildTodaysPlan>, dateStr:
       'END:VEVENT',
     ].join('\r\n');
   }).join('\r\n');
-  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Where To Go Sour//Day Plan//EN', 'CALSCALE:GREGORIAN', events, 'END:VCALENDAR'].join('\r\n');
+  return ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Hayde Sour//Day Plan//EN', 'CALSCALE:GREGORIAN', events, 'END:VCALENDAR'].join('\r\n');
 }
 
 export function AppMark() {
@@ -165,7 +165,7 @@ export function AppMark() {
     <div className="flex h-10 items-center overflow-visible sm:h-12" data-testid="brand-mark">
       <img
         src={`${import.meta.env.BASE_URL}hydesour1.png`}
-        alt="Where To Go Sour"
+        alt="Hayde Sour"
         className="h-14 w-auto max-w-[180px] object-contain sm:h-[6rem] sm:max-w-[290px]"
         onError={(event) => {
           console.error('Could not load logo:', event.currentTarget.src);
@@ -365,8 +365,8 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
                 <button type="submit" className="rounded-xl bg-[#e58c70] px-5 py-3 text-xs font-bold uppercase tracking-[.13em] text-[#fff8ed] transition hover:bg-[#d67558]" data-testid="button-hero-search">{t('search')}</button>
               </form>
               <div className="reveal reveal-delay-3 mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-bold uppercase tracking-[.13em] text-[#f9f0df]/60">
-                <span className="flex items-center gap-2" data-testid="text-lebanon-time"><Clock3 className="h-3.5 w-3.5 text-[#f1c575]" /> {lebanonTime} · Lebanon time</span>
-                <span className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-[#f1c575]" /> 33.27° N, 35.20° E</span>
+                <span className="flex items-center gap-2" data-testid="text-lebanon-time"><Clock3 className="h-3.5 w-3.5 text-[#f1c575]" /> {lebanonTime} � Lebanon time</span>
+                <span className="flex items-center gap-2"><MapPin className="h-3.5 w-3.5 text-[#f1c575]" /> 33.27� N, 35.20� E</span>
                  <span className="flex items-center gap-2"><Sparkles className="h-3.5 w-3.5 text-[#f1c575]" />
   Supported by Sawt Al Farah
   </span>
@@ -521,10 +521,10 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
             <p className="max-w-[280px] text-sm leading-6 text-[#476269]">{t('localContextText')}</p>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div className="rounded-2xl bg-[#f1c575] p-6 text-[#183c44]"><BusFront className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('getAround')}</p><p className="mt-3 text-xs leading-5 text-[#183c44]/70">{tr('Service taxis are the easiest hop. Ask for the white taxis.', 'سيارات الأجرة هي أسهل وسيلة للتنقل. اطلب سيارات الأجرة البيضاء.', 'Les taxis de service sont le moyen le plus simple. Demandez les taxis blancs.')}</p></div>
-            <div className="rounded-2xl bg-[#e58c70] p-6 text-[#fff8ed]"><Wifi className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('stayConnected')}</p><p className="mt-3 text-xs leading-5 text-[#fff8ed]/75">{tr('Most cafes have Wi-Fi. For a local SIM, ask at any phone shop.', 'تتوفر خدمة الواي فاي في معظم المقاهي. للحصول على شريحة محلية، اسأل في أي متجر هواتف.', 'La plupart des cafes ont le Wi-Fi. Pour une carte SIM locale, demandez dans une boutique de telephonie.')}</p></div>
-            <div className="rounded-2xl bg-[#b7c8c0] p-6 text-[#183c44]"><Phone className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('needHelp')}</p><p className="mt-3 text-xs leading-5 text-[#183c44]/70">{tr('For emergencies, call 140. Lebanese Red Cross', 'للطوارئ، اتصل على 140. الصليب الأحمر اللبناني', 'En cas d\'urgence, appelez le 140. Croix-Rouge libanaise')}</p></div>
-            <div className="rounded-2xl bg-[#183c44] p-6 text-[#f9f0df]"><MapPin className="h-5 w-5 text-[#f1c575]" /><p className="mt-12 font-display text-3xl leading-none">{t('bestAddress')}</p><p className="mt-3 text-xs leading-5 text-[#f9f0df]/65">{tr('Old City by the sea. Start there and let the afternoon decide what comes next.', 'المدينة القديمة بجانب البحر. ابدأ من هناك ودع فترة بعد الظهر تقرر ما سيأتي.', 'La vieille ville au bord de la mer. Commencez la et laissez l\'apres-midi decider de la suite.')}</p></div>
+            <div className="rounded-2xl bg-[#f1c575] p-6 text-[#183c44]"><BusFront className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('getAround')}</p><p className="mt-3 text-xs leading-5 text-[#183c44]/70">{tr('Service taxis are the easiest hop. Ask for the white taxis.', '?????? ?????? ?? ???? ????? ??????. ???? ?????? ?????? ???????.', 'Les taxis de service sont le moyen le plus simple. Demandez les taxis blancs.')}</p></div>
+            <div className="rounded-2xl bg-[#e58c70] p-6 text-[#fff8ed]"><Wifi className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('stayConnected')}</p><p className="mt-3 text-xs leading-5 text-[#fff8ed]/75">{tr('Most cafes have Wi-Fi. For a local SIM, ask at any phone shop.', '????? ???? ????? ??? ?? ???? ???????. ?????? ??? ????? ?????? ???? ?? ?? ???? ?????.', 'La plupart des cafes ont le Wi-Fi. Pour une carte SIM locale, demandez dans une boutique de telephonie.')}</p></div>
+            <div className="rounded-2xl bg-[#b7c8c0] p-6 text-[#183c44]"><Phone className="h-5 w-5" /><p className="mt-12 font-display text-3xl leading-none">{t('needHelp')}</p><p className="mt-3 text-xs leading-5 text-[#183c44]/70">{tr('For emergencies, call 140. Lebanese Red Cross', '???????? ???? ??? 140. ?????? ?????? ????????', 'En cas d\'urgence, appelez le 140. Croix-Rouge libanaise')}</p></div>
+            <div className="rounded-2xl bg-[#183c44] p-6 text-[#f9f0df]"><MapPin className="h-5 w-5 text-[#f1c575]" /><p className="mt-12 font-display text-3xl leading-none">{t('bestAddress')}</p><p className="mt-3 text-xs leading-5 text-[#f9f0df]/65">{tr('Old City by the sea. Start there and let the afternoon decide what comes next.', '??????? ??????? ????? ?????. ???? ?? ???? ??? ???? ??? ????? ???? ?? ?????.', 'La vieille ville au bord de la mer. Commencez la et laissez l\'apres-midi decider de la suite.')}</p></div>
           </div>
         </section>
       </main>
@@ -554,7 +554,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               <a href="#top" className="hover:text-[#e58c70]" data-testid="footer-link-top">Back to top</a>
               <a href="/admin" className="hover:text-[#e58c70]" data-testid="footer-link-admin">Admin</a>
               <span className="font-mono-custom font-normal tracking-normal text-[#476269]/60">
-                Made for Sour · 2026
+                Made for Sour � 2026
               </span>
               <span className="font-mono-custom font-normal tracking-normal text-[#476269]/60">
                 Build By @mmwebstudio
@@ -570,15 +570,15 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
         <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#183c44]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" role="dialog" aria-modal="true" aria-label={`${selected.name} details`} data-testid="dialog-listing-details">
           <div ref={homeSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[560px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
             <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-details" {...homeSheet.handleProps} />
-            <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', 'إغلاق التفاصيل', 'Fermer les details')} data-testid="button-close-details"><X className="h-4 w-4" /></button>
+            <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', '????? ????????', 'Fermer les details')} data-testid="button-close-details"><X className="h-4 w-4" /></button>
             {resolveImageSrc(selected, imageUrlFor(selected.id, selected.updatedAt)) && <BlurImage src={resolveImageSrc(selected, imageUrlFor(selected.id, selected.updatedAt))!} alt="" containerClassName="mb-6 h-44 w-full rounded-2xl" className="h-44 w-full rounded-2xl object-cover" />}
-            <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{selected.category} · {selected.tag}</p>
+            <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{selected.category} � {selected.tag}</p>
             <h2 className="mt-2 pr-8 font-display text-5xl leading-[.9]">{selected.name}</h2>
             <p className="mt-5 text-sm leading-6 text-[#476269]">{selected.description}</p>
             <div className="mt-7 grid grid-cols-2 gap-3 text-xs">
               <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{t('where')}</p><p className="mt-1 font-semibold">{selected.area}</p></div>
               <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{t('hours')}</p><p className="mt-1 font-semibold">{selected.hours}</p></div>
-              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{t('localNote')}</p><p className="mt-1 font-semibold">{selected.rating} {tr('rating', 'تقييم', 'avis')} · {selected.price}</p></div>
+              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{t('localNote')}</p><p className="mt-1 font-semibold">{selected.rating} {tr('rating', '?????', 'avis')} � {selected.price}</p></div>
               <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{t('call')}</p><p className="mt-1 font-semibold">{selected.phone}</p></div>
             </div>
             <div className="mt-7 flex flex-col gap-2 sm:flex-row">
@@ -594,7 +594,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
 
 const PAGE_METADATA: Record<string, { title: string; description: string }> = {
   '/': {
-    title: 'Hayde Sour | هيدي صور',
+    title: 'Hayde Sour | ???? ???',
     description: 'Discover cafes, restaurants, hotels, shops, nature, and local experiences in Tyre (Sour), Lebanon.',
   },
   '/browse': {
