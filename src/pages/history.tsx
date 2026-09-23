@@ -95,9 +95,9 @@ export default function HistoryPage() {
       </main>
 
       {selected && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#183c44]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" role="dialog" aria-modal="true" aria-label={`${selected.name} details`} data-testid="dialog-history-details">
-          <div ref={detailSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[700px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8">
-            <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-history-details" {...detailSheet.handleProps} />
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-[#183c44]/55 p-0 backdrop-blur-sm sm:items-center sm:p-5" onClick={() => setSelected(null)} role="dialog" aria-modal="true" aria-label={`${selected.name} details`} data-testid="dialog-history-details">
+          <div ref={detailSheet.cardRef} className="relative max-h-[90dvh] w-full max-w-[700px] overflow-y-auto rounded-t-3xl bg-[#f9f0df] p-6 text-[#183c44] shadow-2xl sm:rounded-3xl sm:p-8" onClick={(event) => event.stopPropagation()}>
+            <div className="absolute left-1/2 top-2 h-1.5 w-12 -translate-x-1/2 touch-none rounded-full bg-[#d7c9b4] before:absolute before:-inset-3 before:content-[''] sm:hidden" aria-hidden="true" data-testid="handle-swipe-close-history-details" {...detailSheet.handleProps} />
             <button onClick={() => setSelected(null)} className="absolute right-5 top-5 touch-manipulation rounded-full border border-[#d7c9b4] p-2 text-[#476269] hover:text-[#e58c70]" aria-label={tr('Close details', 'إغلاق التفاصيل', 'Fermer les details')} data-testid="button-close-history-details"><X className="h-4 w-4" /></button>
             {resolveImageSrc(selected, galleryImageUrlFor(selected.id, selected.updatedAt)) && <BlurImage src={resolveImageSrc(selected, galleryImageUrlFor(selected.id, selected.updatedAt))!} alt={localized(selected.name, selected.nameAr, selected.nameFr)} containerClassName="mb-6 h-52 w-full rounded-2xl" className="h-52 w-full rounded-2xl object-cover" />}
             <p className="font-mono-custom text-[10px] uppercase tracking-[.18em] text-[#e58c70]">{tr('Tyre history', 'تاريخ صور', 'Histoire de Tyr')}</p>
