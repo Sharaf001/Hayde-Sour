@@ -723,7 +723,7 @@ app.put('/api/listings/:id', requireAdmin, async (req, res) => {
     const { rows } = await pool.query(
       `UPDATE listings SET
          name = COALESCE($2, name), category = COALESCE($3, category), area = COALESCE($4, area),
-         second_area = CASE WHEN $5 IS NULL THEN second_area ELSE NULLIF($5, '') END,
+         second_area = CASE WHEN $5::text IS NULL THEN second_area ELSE NULLIF($5::text, '') END,
          description = COALESCE($6, description), hours = COALESCE($7, hours), phone = COALESCE($8, phone),
          rating = COALESCE($9, rating), price = COALESCE($10, price), tag = COALESCE($11, tag),
          image_data = CASE WHEN $25 THEN NULL ELSE COALESCE($12, image_data) END,
@@ -741,7 +741,7 @@ app.put('/api/listings/:id', requireAdmin, async (req, res) => {
        WHERE id = $1
        RETURNING ${LISTING_RETURNING}`,
       [
-        req.params.id, name, category, area, secondArea === undefined ? null : secondArea.trim(), description, hours, phone, rating, price, tag,
+        req.params.id, name, category, area, typeof secondArea === 'string' ? secondArea.trim() : secondArea ?? null, description, hours, phone, rating, price, tag,
         imageBuffer, imageMime || null, imageUrl || null,
         logoBuffer, logoMime || null, logoUrl || null,
         menuBuffer, menuMime || null, menuUrl || null,
