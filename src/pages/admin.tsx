@@ -155,7 +155,8 @@ function fileToBase64(file: File): Promise<{ base64: string; mime: string }> {
 async function resolveImageValue(value: ImageInputValue): Promise<{ imageBase64?: string; imageMime?: string; imageUrl?: string }> {
   if (value.url) return { imageUrl: value.url };
   if (value.file) {
-    const optimizedFile = value.file.type === 'application/pdf' ? value.file : await optimizeImage(value.file);
+    const isPdf = value.file.type === 'application/pdf' || value.file.name.toLowerCase().endsWith('.pdf');
+    const optimizedFile = isPdf ? value.file : await optimizeImage(value.file);
     const { base64, mime } = await fileToBase64(optimizedFile);
     return { imageBase64: base64, imageMime: mime };
   }

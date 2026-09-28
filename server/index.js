@@ -48,7 +48,7 @@ app.use(cors({
   origin: allowedOrigins.length ? allowedOrigins : true,
 }));
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '50mb' }));
 
 // General limiter: caps request volume per IP across the API. Image-serving
 // routes are excluded - a single page load fires off many image requests at
