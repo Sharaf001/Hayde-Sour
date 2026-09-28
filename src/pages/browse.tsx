@@ -151,6 +151,7 @@ const availableCategories = [
     listing.name,
     listing.category,
     listing.area,
+    listing.secondArea,
     listing.description,
     listing.tag,
     listing.hours,
@@ -240,7 +241,7 @@ const availableCategories = [
                       </p>
                     )}
                     <div className="mt-auto flex items-end justify-between gap-3 pt-5 text-[10px] font-bold uppercase tracking-[.1em] text-[#476269]/75">
-                      <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-[#e58c70]" /> {listing.area}</span>
+                      <span className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5 text-[#e58c70]" /> {listing.area}{listing.secondArea && <span className="text-[#e58c70]"> +1</span>}</span>
                       <span className="text-[#183c44]">{listing.rating} <span className="text-[#e58c70]">·</span> {listing.price}</span>
                     </div>
                   </div>
@@ -320,13 +321,14 @@ const availableCategories = [
               <StarRating value={loggedIn ? ratingInfo?.yourRating ?? null : null} onRate={rateSelected} />
             </div>
             <div className="mt-7 grid grid-cols-2 gap-3 text-xs">
-              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Where', 'الموقع', 'Ou')}</p><p className="mt-1 font-semibold">{selected.area}</p></div>
+              <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Where', 'الموقع', 'Ou')}</p><p className="mt-1 font-semibold">{selected.area}</p>{selected.secondArea && <><p className="mt-2 font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Second location', 'الموقع الثاني', 'Deuxième emplacement')}</p><p className="mt-1 font-semibold">{selected.secondArea}</p></>}</div>
               <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Hours', 'الساعات', 'Horaires')}</p><p className="mt-1 font-semibold">{selected.hours}</p></div>
               <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Local note', 'ملاحظة محلية', 'Note locale')}</p><p className="mt-1 font-semibold">{selected.rating} rating · {selected.price}</p></div>
               <div className="rounded-xl bg-[#e9dfcd] p-3"><p className="font-mono-custom text-[9px] uppercase tracking-[.1em] text-[#476269]/70">{tr('Call', 'اتصل', 'Appeler')}</p><p className="mt-1 font-semibold">{selected.phone}</p></div>
             </div>
             <div className="mt-7 flex flex-col gap-2 sm:flex-row">
               <a href={directionsUrlFor(selected)} target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#183c44] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#f9f0df] hover:bg-[#24515a]" data-testid="link-get-directions"><MapPin className="h-4 w-4 text-[#f1c575]" /> {tr('Get directions', 'احصل على الاتجاهات', 'Obtenir l\'itineraire')} <ExternalLink className="h-3.5 w-3.5 opacity-60" /></a>
+              {selected.secondArea && <a href={directionsUrlFor({ ...selected, area: selected.secondArea, latitude: null, longitude: null })} target="_blank" rel="noreferrer" className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#cfc0aa] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#183c44] hover:border-[#e58c70]" data-testid="link-get-second-directions"><MapPin className="h-4 w-4 text-[#e58c70]" /> {tr('Second location', 'الموقع الثاني', 'Deuxième emplacement')} <ExternalLink className="h-3.5 w-3.5 opacity-60" /></a>}
               <button onClick={() => toggleSaved(selected)} className="flex items-center justify-center gap-2 rounded-xl border border-[#cfc0aa] px-4 py-3.5 text-xs font-bold uppercase tracking-[.12em] text-[#183c44] hover:border-[#e58c70]" data-testid="button-save-details">{saved.includes(selected.id) ? <BookmarkCheck className="h-4 w-4 text-[#e58c70]" /> : <Bookmark className="h-4 w-4" />} {saved.includes(selected.id) ? tr('Saved', 'محفوظة', 'Enregistre') : tr('Save spot', 'احفظ المكان', 'Enregistrer ce lieu')}</button>
             </div>
           </div>

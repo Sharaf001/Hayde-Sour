@@ -547,7 +547,7 @@ function invalidCoordinate(latitude, longitude) {
   return null;
 }
 
-const LISTING_SELECT = `l.id, l.name, l.category, l.area, l.description, l.hours, l.phone, l.rating, l.price, l.tag,
+const LISTING_SELECT = `l.id, l.name, l.category, l.area, l.second_area AS "secondArea", l.description, l.hours, l.phone, l.rating, l.price, l.tag,
               (l.image_data IS NOT NULL) AS "hasImage", l.image_url AS "imageUrl",
               (l.logo_data IS NOT NULL) AS "hasLogo", l.logo_url AS "logoUrl",
               (l.menu_data IS NOT NULL) AS "hasMenu", l.menu_url AS "menuUrl",
@@ -557,7 +557,7 @@ const LISTING_SELECT = `l.id, l.name, l.category, l.area, l.description, l.hours
 // Same columns, without the "l." alias - for use in INSERT/UPDATE
 // RETURNING clauses, where the table has no alias (unlike the SELECT
 // queries above, which join as "listings l").
-const LISTING_RETURNING = `id, name, category, area, description, hours, phone, rating, price, tag,
+const LISTING_RETURNING = `id, name, category, area, second_area AS "secondArea", description, hours, phone, rating, price, tag,
               (image_data IS NOT NULL) AS "hasImage", image_url AS "imageUrl",
               (logo_data IS NOT NULL) AS "hasLogo", logo_url AS "logoUrl",
               (menu_data IS NOT NULL) AS "hasMenu", menu_url AS "menuUrl",
@@ -646,7 +646,7 @@ app.get('/api/listings/:id', async (req, res) => {
 
 app.post('/api/listings', requireAdmin, async (req, res) => {
   const {
-    id, name, category, area, description, hours, phone, rating, price, tag,
+    id, name, category, area, secondArea, description, hours, phone, rating, price, tag,
     imageBase64, imageMime, imageUrl,
     logoBase64, logoMime, logoUrl,
     menuBase64, menuMime, menuUrl,
@@ -664,15 +664,15 @@ app.post('/api/listings', requireAdmin, async (req, res) => {
   try {
     const { rows } = await pool.query(
       `INSERT INTO listings (
-         id, name, category, area, description, hours, phone, rating, price, tag,
+         id, name, category, area, second_area, description, hours, phone, rating, price, tag,
          image_data, image_mime, image_url,
          logo_data, logo_mime, logo_url,
          menu_data, menu_mime, menu_url,
          instagram_url, website_url, latitude, longitude
        )
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23)
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22,$23,$24)
        ON CONFLICT (id) DO UPDATE SET
-         name = EXCLUDED.name, category = EXCLUDED.category, area = EXCLUDED.area,
+         name = EXCLUDED.name, category = EXCLUDED.category, area = EXCLUDED.area, second_area = EXCLUDED.second_area,
          description = EXCLUDED.description, hours = EXCLUDED.hours, phone = EXCLUDED.phone,
          rating = EXCLUDED.rating, price = EXCLUDED.price, tag = EXCLUDED.tag,
          image_data = COALESCE(EXCLUDED.image_data, listings.image_data),
@@ -689,7 +689,7 @@ app.post('/api/listings', requireAdmin, async (req, res) => {
          updated_at = now()
        RETURNING ${LISTING_RETURNING}`,
       [
-        id, name, category, area, description, hours, phone, rating, price, tag,
+        id, name, category, area, secondArea || null, description, hours, phone, rating, price, tag,
         imageBuffer, imageMime || null, imageUrl || null,
         logoBuffer, logoMime || null, logoUrl || null,
         menuBuffer, menuMime || null, menuUrl || null,
@@ -706,7 +706,7 @@ app.post('/api/listings', requireAdmin, async (req, res) => {
 
 app.put('/api/listings/:id', requireAdmin, async (req, res) => {
   const {
-    name, category, area, description, hours, phone, rating, price, tag,
+    name, category, area, secondArea, description, hours, phone, rating, price, tag,
     imageBase64, imageMime, imageUrl,
     logoBase64, logoMime, logoUrl,
     menuBase64, menuMime, menuUrl,
@@ -723,24 +723,25 @@ app.put('/api/listings/:id', requireAdmin, async (req, res) => {
     const { rows } = await pool.query(
       `UPDATE listings SET
          name = COALESCE($2, name), category = COALESCE($3, category), area = COALESCE($4, area),
-         description = COALESCE($5, description), hours = COALESCE($6, hours), phone = COALESCE($7, phone),
-         rating = COALESCE($8, rating), price = COALESCE($9, price), tag = COALESCE($10, tag),
-         image_data = CASE WHEN $24 THEN NULL ELSE COALESCE($11, image_data) END,
-         image_mime = CASE WHEN $24 THEN NULL ELSE COALESCE($12, image_mime) END,
-         image_url = CASE WHEN $24 THEN NULL ELSE COALESCE($13, image_url) END,
-         logo_data = CASE WHEN $25 THEN NULL ELSE COALESCE($14, logo_data) END,
-         logo_mime = CASE WHEN $25 THEN NULL ELSE COALESCE($15, logo_mime) END,
-         logo_url = CASE WHEN $25 THEN NULL ELSE COALESCE($16, logo_url) END,
-         menu_data = CASE WHEN $26 THEN NULL ELSE COALESCE($17, menu_data) END,
-         menu_mime = CASE WHEN $26 THEN NULL ELSE COALESCE($18, menu_mime) END,
-         menu_url = CASE WHEN $26 THEN NULL ELSE COALESCE($19, menu_url) END,
-         instagram_url = COALESCE($20, instagram_url), website_url = COALESCE($21, website_url),
-         latitude = $22, longitude = $23,
+         second_area = CASE WHEN $5 IS NULL THEN second_area ELSE NULLIF($5, '') END,
+         description = COALESCE($6, description), hours = COALESCE($7, hours), phone = COALESCE($8, phone),
+         rating = COALESCE($9, rating), price = COALESCE($10, price), tag = COALESCE($11, tag),
+         image_data = CASE WHEN $25 THEN NULL ELSE COALESCE($12, image_data) END,
+         image_mime = CASE WHEN $25 THEN NULL ELSE COALESCE($13, image_mime) END,
+         image_url = CASE WHEN $25 THEN NULL ELSE COALESCE($14, image_url) END,
+         logo_data = CASE WHEN $26 THEN NULL ELSE COALESCE($15, logo_data) END,
+         logo_mime = CASE WHEN $26 THEN NULL ELSE COALESCE($16, logo_mime) END,
+         logo_url = CASE WHEN $26 THEN NULL ELSE COALESCE($17, logo_url) END,
+         menu_data = CASE WHEN $27 THEN NULL ELSE COALESCE($18, menu_data) END,
+         menu_mime = CASE WHEN $27 THEN NULL ELSE COALESCE($19, menu_mime) END,
+         menu_url = CASE WHEN $27 THEN NULL ELSE COALESCE($20, menu_url) END,
+         instagram_url = COALESCE($21, instagram_url), website_url = COALESCE($22, website_url),
+         latitude = $23, longitude = $24,
          updated_at = now()
        WHERE id = $1
        RETURNING ${LISTING_RETURNING}`,
       [
-        req.params.id, name, category, area, description, hours, phone, rating, price, tag,
+        req.params.id, name, category, area, secondArea === undefined ? null : secondArea.trim(), description, hours, phone, rating, price, tag,
         imageBuffer, imageMime || null, imageUrl || null,
         logoBuffer, logoMime || null, logoUrl || null,
         menuBuffer, menuMime || null, menuUrl || null,

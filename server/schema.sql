@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS listings (
   name           TEXT NOT NULL,
   category       TEXT NOT NULL,
   area           TEXT NOT NULL,
+  second_area    TEXT,
   description    TEXT NOT NULL,
   hours          TEXT NOT NULL,
   phone          TEXT NOT NULL,
@@ -111,6 +112,7 @@ CREATE TABLE IF NOT EXISTS listings (
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS image_data BYTEA;
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS image_mime TEXT;
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS image_url TEXT;
+ALTER TABLE listings ADD COLUMN IF NOT EXISTS second_area TEXT;
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS logo_data BYTEA;
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS logo_mime TEXT;
 ALTER TABLE listings ADD COLUMN IF NOT EXISTS logo_url TEXT;

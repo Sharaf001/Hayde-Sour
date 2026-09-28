@@ -7,11 +7,13 @@ export function ImageInput({
   onChange,
   label,
   testIdPrefix,
+  accept = 'image/*',
 }: {
   value: ImageInputValue;
   onChange: (value: ImageInputValue) => void;
   label?: string;
   testIdPrefix: string;
+  accept?: string;
 }) {
   const [mode, setMode] = useState<'file' | 'url'>(value.url ? 'url' : 'file');
 
@@ -39,7 +41,7 @@ export function ImageInput({
       {mode === 'file' ? (
         <input
           type="file"
-          accept="image/*"
+          accept={accept}
           onChange={(e) => onChange({ file: e.target.files?.[0] || null, url: '' })}
           className="mt-2 text-sm"
           data-testid={`${testIdPrefix}-file`}

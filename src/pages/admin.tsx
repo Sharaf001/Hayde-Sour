@@ -109,6 +109,7 @@ const emptyForm: ListingInput = {
   name: '',
   category: '',
   area: '',
+  secondArea: '',
   description: '',
   hours: '',
   phone: '',
@@ -154,7 +155,7 @@ function fileToBase64(file: File): Promise<{ base64: string; mime: string }> {
 async function resolveImageValue(value: ImageInputValue): Promise<{ imageBase64?: string; imageMime?: string; imageUrl?: string }> {
   if (value.url) return { imageUrl: value.url };
   if (value.file) {
-    const optimizedFile = await optimizeImage(value.file);
+    const optimizedFile = value.file.type === 'application/pdf' ? value.file : await optimizeImage(value.file);
     const { base64, mime } = await fileToBase64(optimizedFile);
     return { imageBase64: base64, imageMime: mime };
   }
@@ -304,6 +305,7 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
       name: listing.name,
       category: listing.category,
       area: listing.area,
+      secondArea: listing.secondArea || '',
       description: listing.description,
       hours: listing.hours,
       phone: listing.phone,
@@ -322,6 +324,14 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
     setClearLogo(false);
     setClearMenu(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const updateCategory = (category: string) => {
+    setForm({
+      ...form,
+      category,
+      secondArea: category === 'Restaurants' || category === 'Cafes' ? form.secondArea : '',
+    });
   };
 
   const cancelEdit = () => {
@@ -366,7 +376,7 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
            <select
   required
   value={form.category}
-  onChange={(e) => setForm({ ...form, category: e.target.value })}
+  onChange={(e) => updateCategory(e.target.value)}
   disabled={categoriesLoading || categories.length === 0}
   className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm disabled:opacity-60"
   data-testid="select-listing-category"
@@ -381,6 +391,9 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
   ))}
 </select>
             <input required placeholder="Area" value={form.area} onChange={(e) => setForm({ ...form, area: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid="input-listing-area" />
+            {(form.category === 'Restaurants' || form.category === 'Cafes') && (
+              <input placeholder="Second location (optional)" value={form.secondArea || ''} onChange={(e) => setForm({ ...form, secondArea: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid="input-listing-second-area" />
+            )}
             <input required placeholder="Hours" value={form.hours} onChange={(e) => setForm({ ...form, hours: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid="input-listing-hours" />
             <input required placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid="input-listing-phone" />
             <input required placeholder="Rating (e.g. 4.7)" value={form.rating} onChange={(e) => setForm({ ...form, rating: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid="input-listing-rating" />
@@ -415,7 +428,7 @@ const [form, setForm] = useState<ListingInput>(emptyForm);
                   </div>
                 )}
                 {clearMenu && <p className="mb-2 text-[11px] text-[#c1543f]">Will be removed on save. <button type="button" className="underline" onClick={() => setClearMenu(false)}>Undo</button></p>}
-                <ImageInput value={menu} onChange={setMenu} label="Menu (optional - photo or PDF)" testIdPrefix="input-listing-menu" />
+                <ImageInput value={menu} onChange={setMenu} label="Menu (optional - photo or PDF)" accept="image/*,.pdf,application/pdf" testIdPrefix="input-listing-menu" />
               </div>
             )}
             <input placeholder="Instagram link (optional)" value={form.instagramUrl || ''} onChange={(e) => setForm({ ...form, instagramUrl: e.target.value })} className="rounded-lg border border-[#cfc0aa] bg-white px-3 py-2 text-sm" data-testid="input-listing-instagram" />

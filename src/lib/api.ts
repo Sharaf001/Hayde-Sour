@@ -9,6 +9,7 @@ export type ApiListing = {
   name: string;
   category: string;
   area: string;
+  secondArea: string | null;
   description: string;
   hours: string;
   phone: string;
@@ -295,6 +296,7 @@ export type ListingInput = {
   name: string;
   category: string;
   area: string;
+  secondArea?: string;
   description: string;
   hours: string;
   phone: string;
