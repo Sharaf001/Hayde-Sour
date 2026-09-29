@@ -34,6 +34,7 @@ import {
   ExternalLink,
   HeartPulse,
   HousePlug,
+  Instagram,
   Leaf,
   Map,
   MapPin,
@@ -550,6 +551,22 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
               </p>
             </div>
 
+            <div className="text-left lg:text-right">
+              <p className="font-mono-custom text-[10px] font-bold uppercase tracking-[.15em] text-[#476269]">
+                {tr('Stay connected', 'ابق متصلا', 'Rester connecte')}
+              </p>
+              <div className="mt-3 flex flex-col gap-2 text-[11px] font-bold uppercase tracking-[.08em] text-[#183c44] lg:items-end">
+                <a href="https://www.instagram.com/haydesour/?utm_source=ig_web_button_share_sheet" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#e58c70]" aria-label="Follow haydesour on Instagram" data-testid="link-footer-haydesour-instagram">
+                  <Instagram className="h-4 w-4" />
+                  haydesour
+                </a>
+                <a href="https://www.instagram.com/mm.webstudio?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#e58c70]" aria-label="Follow mmwebstudio on Instagram" data-testid="link-footer-mmwebstudio-instagram">
+                  <Instagram className="h-4 w-4" />
+                  mmwebstudio
+                </a>
+              </div>
+            </div>
+
             <div className="flex flex-wrap gap-x-7 gap-y-3 text-[10px] font-bold uppercase tracking-[.15em] text-[#476269]">
               <a href="#top" className="hover:text-[#e58c70]" data-testid="footer-link-top">Back to top</a>
               <a href="/admin" className="hover:text-[#e58c70]" data-testid="footer-link-admin">Admin</a>
@@ -557,7 +574,7 @@ const categoryCards: CategoryCard[] = categoryRecords.map((record) => {
                 Made for Sour · 2026
               </span>
               <span className="font-mono-custom font-normal tracking-normal text-[#476269]/60">
-                Build By @mmwebstudio
+                Developed by @mmwebstudio
               </span>
             </div>
           </div>
